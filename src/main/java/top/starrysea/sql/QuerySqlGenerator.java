@@ -78,11 +78,6 @@ public class QuerySqlGenerator implements ISqlGenerator {
 			tableAlias = new HashMap<>();
 		}
 
-		public Builder select(SelectClause selectClause) {
-			this.selectClauses.add(selectClause);
-			return this;
-		}
-
 		public Builder select(String colunmName) {
 			SelectClause selectClause = SelectClause.of(colunmName);
 			this.selectClauses.add(selectClause);
