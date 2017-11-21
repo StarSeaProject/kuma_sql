@@ -23,7 +23,7 @@ public class JoinGenerator extends Generator {
 			String sourceAlias = sqlGenerator.getTableAlias(joinClause.getSource()) != null
 					? sqlGenerator.getTableAlias(joinClause.getSource())
 					: pojo2table(joinClause.getSource().getSimpleName());
-					joinBuilder.append(sourceAlias + "." + joinClause.getSourceColumn() + " ");
+			joinBuilder.append(sourceAlias + "." + joinClause.getSourceColumn() + " ");
 		}
 		if (getNextGenerator() != null) {
 			return getNextGenerator().generate(

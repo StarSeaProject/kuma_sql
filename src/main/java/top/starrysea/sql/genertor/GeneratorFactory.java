@@ -7,7 +7,7 @@ import java.util.Map;
 import top.starrysea.sql.ISqlGenerator;
 
 public class GeneratorFactory {
-	
+
 	private static Map<Class<?>, Generator> generators = new HashMap<>();
 
 	private ISqlGenerator sqlGenerator;

@@ -9,22 +9,22 @@ public class OrderClause {
 		orderClause.setColumnName(columnName);
 		return orderClause;
 	}
-	
+
 	public static OrderClause of(String columnName, OrderByType orderByType) {
 		OrderClause orderClause = new OrderClause();
-		orderClause.setColumnName(columnName+" "+orderByType.getType());
+		orderClause.setColumnName(columnName + " " + orderByType.getType());
 		return orderClause;
 	}
-	
+
 	public static OrderClause of(String columnName, String alias) {
 		OrderClause orderClause = new OrderClause();
 		orderClause.setColumnName(alias + "." + columnName);
 		return orderClause;
 	}
-	
-	public static OrderClause of(String columnName, String alias,OrderByType orderByType) {
+
+	public static OrderClause of(String columnName, String alias, OrderByType orderByType) {
 		OrderClause orderClause = new OrderClause();
-		orderClause.setColumnName(alias + "." + columnName+" "+orderByType.getType());
+		orderClause.setColumnName(alias + "." + columnName + " " + orderByType.getType());
 		return orderClause;
 	}
 

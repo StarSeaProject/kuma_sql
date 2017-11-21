@@ -17,6 +17,7 @@ import top.starrysea.sql.QuerySqlGenerator;
 import top.starrysea.sql.SqlWithParams;
 import top.starrysea.sql.UpdateSqlGenerator;
 import top.starrysea.sql.clause.OrderByType;
+import top.starrysea.sql.clause.SelectClause;
 import top.starrysea.sql.clause.WhereType;
 
 @Component("kumaSqlDao")
@@ -85,19 +86,27 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 		return this;
 	}
 
-	public KumaSqlDao where(String colunmName, WhereType whereType, Object value) {
+	public KumaSqlDao where(String columnName, WhereType whereType, Object value) {
 		if (operationType == OperationType.SELECT) {
 			top.starrysea.sql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.sql.QuerySqlGenerator.Builder) builder;
-			queryBuilder.where(colunmName, whereType, value);
+			queryBuilder.where(columnName, whereType, value);
+			return this;
+		} else if (operationType == OperationType.UPDATE) {
+			top.starrysea.sql.UpdateSqlGenerator.Builder updateBuilder = (top.starrysea.sql.UpdateSqlGenerator.Builder) builder;
+			updateBuilder.where(columnName, whereType, value);
+			return this;
+		} else if (operationType == OperationType.DELETE) {
+			top.starrysea.sql.DeleteSqlGenerator.Builder deleteBuilder = (top.starrysea.sql.DeleteSqlGenerator.Builder) builder;
+			deleteBuilder.where(columnName, whereType, value);
 			return this;
 		} else
 			throw new IllegalStateException("当前不是SELECT模式,请调用changeMode进入SELECT模式!");
 	}
 
-	public KumaSqlDao where(String colunmName, String alias, WhereType whereType, Object value) {
+	public KumaSqlDao where(String columnName, String alias, WhereType whereType, Object value) {
 		if (operationType == OperationType.SELECT) {
 			top.starrysea.sql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.sql.QuerySqlGenerator.Builder) builder;
-			queryBuilder.where(colunmName, alias, whereType, value);
+			queryBuilder.where(columnName, alias, whereType, value);
 			return this;
 		} else
 			throw new IllegalStateException("当前不是SELECT模式,请调用changeMode进入SELECT模式!");
@@ -235,23 +244,33 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 
 	@Override
 	public <T> SqlResult end(RowMapper<? extends Entity> rowMapper) {
-		if (operationType == OperationType.SELECT) {
-			QuerySqlGenerator querySqlGenerator = (QuerySqlGenerator) builder.build();
-			SqlWithParams sqlWithParams = querySqlGenerator.generate();
-			if (querySqlGenerator.getSelectClauses().size() > 1) {
-				List<? extends Entity> result = template.query(sqlWithParams.getSql(), sqlWithParams.getParams(),
-						rowMapper);
-				return new ListSqlResult(result);
-			} else if (querySqlGenerator.getSelectClauses().size() == 1) {
-				Entity result = template.queryForObject(sqlWithParams.getSql(), sqlWithParams.getParams(), rowMapper);
-				return new EntitySqlResult(result);
+		if (operationType != OperationType.SELECT)
+			throw new UnsupportedOperationException("该end方法仅支持SELECT模式,增删改请使用无参数版本的end方法");
+		QuerySqlGenerator querySqlGenerator = (QuerySqlGenerator) builder.build();
+		SqlWithParams sqlWithParams = querySqlGenerator.generate();
+		if (querySqlGenerator.getSelectClauses().size() > 1) {
+			List<? extends Entity> result = template.query(sqlWithParams.getSql(), sqlWithParams.getParams(),
+					rowMapper);
+			return new ListSqlResult(result);
+		} else if (querySqlGenerator.getSelectClauses().size() == 1) {
+			SelectClause firstSelectClause = querySqlGenerator.getSelectClauses().get(0);
+			if (firstSelectClause == SelectClause.COUNT || firstSelectClause == SelectClause.MAX
+					|| firstSelectClause == SelectClause.MIN) {
+				int result = template.queryForObject(sqlWithParams.getSql(), sqlWithParams.getParams(), Integer.class);
+				return new IntegerSqlResult(result);
 			}
-		} else if (operationType == OperationType.INSERT || operationType == OperationType.DELETE
-				|| operationType == OperationType.UPDATE) {
-			SqlWithParams sqlWithParams = builder.build().generate();
-			template.update(sqlWithParams.getSql(), sqlWithParams.getParams());
-			return new SqlResult(true);
+			Entity result = template.queryForObject(sqlWithParams.getSql(), sqlWithParams.getParams(), rowMapper);
+			return new EntitySqlResult(result);
 		}
-		throw new UnsupportedOperationException("当前的操作类型无法支持!");
+		throw new UnsupportedOperationException("当前的数据类型无法支持!");
+	}
+
+	@Override
+	public <T> SqlResult end() {
+		if (operationType == OperationType.SELECT)
+			throw new UnsupportedOperationException("该end方法不支持SELECT模式");
+		SqlWithParams sqlWithParams = builder.build().generate();
+		template.update(sqlWithParams.getSql(), sqlWithParams.getParams());
+		return new SqlResult(true);
 	}
 }

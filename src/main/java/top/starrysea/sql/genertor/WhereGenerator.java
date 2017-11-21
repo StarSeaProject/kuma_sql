@@ -36,7 +36,8 @@ public class WhereGenerator extends Generator {
 		}
 
 		if (getNextGenerator() != null) {
-			return getNextGenerator().generate(new SqlWithParams(sqlBuffer.append(whereBuffer).toString(), params.toArray()));
+			return getNextGenerator()
+					.generate(new SqlWithParams(sqlBuffer.append(whereBuffer).toString(), params.toArray()));
 		} else {
 			return new SqlWithParams(sqlBuffer.append(whereBuffer).toString(), params.toArray());
 		}

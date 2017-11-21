@@ -14,7 +14,6 @@ import top.starrysea.sql.handler.IWhereHandler;
 
 public class DeleteSqlGenerator extends NonQuerySqlGenerator {
 
-	
 	private Class<? extends Entity> table;
 	private List<WhereClause> whereClauses;
 	private static Map<WhereType, IWhereHandler> handlerMap = new HashMap<>();
@@ -29,26 +28,26 @@ public class DeleteSqlGenerator extends NonQuerySqlGenerator {
 		handlerMap.put(WhereType.LESS, Handlers.lessHandler);
 		handlerMap.put(WhereType.LESS_EQUAL, Handlers.lessEqualHandler);
 	}
-	
+
 	private DeleteSqlGenerator(Builder builder) {
-		this.table=builder.table;
-		this.whereClauses=builder.whereClauses;
+		this.table = builder.table;
+		this.whereClauses = builder.whereClauses;
 	}
-	
-	public static class Builder implements IBuilder<DeleteSqlGenerator>{
-		
+
+	public static class Builder implements IBuilder<DeleteSqlGenerator> {
+
 		private Class<? extends Entity> table;
 		private List<WhereClause> whereClauses;
-		
+
 		public Builder() {
 			whereClauses = new ArrayList<>();
 		}
-		
+
 		public Builder table(Class<? extends Entity> table) {
 			this.table = table;
 			return this;
 		}
-		
+
 		public Builder where(String columnName, WhereType whereType, Object value) {
 			WhereClause updateWhereClause = WhereClause.of(columnName, whereType, value);
 			whereClauses.add(updateWhereClause);
@@ -57,13 +56,15 @@ public class DeleteSqlGenerator extends NonQuerySqlGenerator {
 
 		@Override
 		public DeleteSqlGenerator build() {
-			if(whereClauses.size()==0) {
+			if (table == null)
+				throw new IllegalArgumentException("当前没有设置要操作哪张表!");
+			if (whereClauses.size() == 0) {
 				System.err.println("生成的delete语句没有where条件,将会删掉整张表");
 			}
 			return new DeleteSqlGenerator(this);
 		}
 	}
-	
+
 	public Class<? extends Entity> getTable() {
 		return table;
 	}

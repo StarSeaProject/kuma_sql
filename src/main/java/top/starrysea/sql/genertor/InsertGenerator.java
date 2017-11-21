@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InsertGenerator extends Generator {
-	
+
 	public InsertGenerator(ISqlGenerator sqlGenerator) {
 		super(sqlGenerator);
 	}

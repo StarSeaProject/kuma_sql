@@ -37,9 +37,11 @@ public class SqlGeneratorAdapter {
 	}
 
 	public List<WhereClause> getWhereClauses() {
-		if (!(sqlGenerator instanceof QuerySqlGenerator || sqlGenerator instanceof UpdateSqlGenerator || sqlGenerator instanceof DeleteSqlGenerator))
-			throw new UnsupportedOperationException("getWhereClauses仅支持QuerySqlGenerator类、UpdateSqlGenerator类和DeleteSqlGenerator类,目前类是"
-					+ sqlGenerator.getClass().getName());
+		if (!(sqlGenerator instanceof QuerySqlGenerator || sqlGenerator instanceof UpdateSqlGenerator
+				|| sqlGenerator instanceof DeleteSqlGenerator))
+			throw new UnsupportedOperationException(
+					"getWhereClauses仅支持QuerySqlGenerator类、UpdateSqlGenerator类和DeleteSqlGenerator类,目前类是"
+							+ sqlGenerator.getClass().getName());
 		Class<?> clazz = sqlGenerator.getClass();
 		if (clazz == QuerySqlGenerator.class) {
 			QuerySqlGenerator temp = (QuerySqlGenerator) sqlGenerator;
@@ -69,7 +71,7 @@ public class SqlGeneratorAdapter {
 		QuerySqlGenerator temp = (QuerySqlGenerator) sqlGenerator;
 		return temp.getLimitClause();
 	}
-	
+
 	public List<JoinClause> getJoinClauses() {
 		if (!(sqlGenerator instanceof QuerySqlGenerator))
 			throw new UnsupportedOperationException(
@@ -77,7 +79,7 @@ public class SqlGeneratorAdapter {
 		QuerySqlGenerator temp = (QuerySqlGenerator) sqlGenerator;
 		return temp.getJoinClauses();
 	}
-	
+
 	public String getTableAlias(Class<? extends Entity> table) {
 		if (!(sqlGenerator instanceof QuerySqlGenerator))
 			throw new UnsupportedOperationException(

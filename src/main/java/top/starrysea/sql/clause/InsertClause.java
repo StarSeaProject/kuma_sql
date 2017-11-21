@@ -4,9 +4,9 @@ public class InsertClause {
 
 	private String columnName;
 	private Object value;
-	
-	public static InsertClause of(String columnName,Object value) {
-		InsertClause insertClause=new InsertClause();
+
+	public static InsertClause of(String columnName, Object value) {
+		InsertClause insertClause = new InsertClause();
 		insertClause.setColumnName(columnName);
 		insertClause.setValue(value);
 		return insertClause;

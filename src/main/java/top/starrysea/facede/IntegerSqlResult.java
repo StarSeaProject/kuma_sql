@@ -3,10 +3,10 @@ package top.starrysea.facede;
 public class IntegerSqlResult extends SqlResult {
 
 	private int result;
-	
+
 	public IntegerSqlResult(int result) {
 		super(true);
-		this.result=result;
+		this.result = result;
 	}
 
 	public int getResult() {

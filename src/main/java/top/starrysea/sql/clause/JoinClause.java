@@ -11,7 +11,7 @@ public class JoinClause {
 	private Class<? extends Entity> source;
 	private String sourceColumn;
 
-	public static JoinClause of(JoinType joinType,Class<? extends Entity> target, String alias, String targetColumn,
+	public static JoinClause of(JoinType joinType, Class<? extends Entity> target, String alias, String targetColumn,
 			Class<? extends Entity> source, String sourceColumn) {
 		JoinClause joinClause = new JoinClause();
 		joinClause.setJoinType(joinType);

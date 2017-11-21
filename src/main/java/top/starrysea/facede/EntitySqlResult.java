@@ -18,5 +18,5 @@ public class EntitySqlResult extends SqlResult {
 	public void setResult(Entity result) {
 		this.result = result;
 	}
-	
+
 }

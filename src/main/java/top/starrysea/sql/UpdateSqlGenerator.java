@@ -67,6 +67,8 @@ public class UpdateSqlGenerator extends NonQuerySqlGenerator {
 
 		@Override
 		public UpdateSqlGenerator build() {
+			if (table == null)
+				throw new IllegalArgumentException("操作的表不能为空!");
 			return new UpdateSqlGenerator(this);
 		}
 

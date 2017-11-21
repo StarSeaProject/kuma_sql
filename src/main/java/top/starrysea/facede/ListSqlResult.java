@@ -16,5 +16,5 @@ public class ListSqlResult extends SqlResult {
 	public List<? extends Entity> getResult() {
 		return result;
 	}
-	
+
 }
