@@ -24,7 +24,7 @@ import top.starrysea.kql.genertor.OrderByGenerator;
 import top.starrysea.kql.genertor.SelectGenerator;
 import top.starrysea.kql.genertor.TableGenerator;
 import top.starrysea.kql.genertor.WhereGenerator;
-import top.starrysea.kql.handler.Handlers;
+import top.starrysea.kql.handler.WhereHandlers;
 import top.starrysea.kql.handler.IWhereHandler;
 
 public class QuerySqlGenerator implements ISqlGenerator {
@@ -39,10 +39,10 @@ public class QuerySqlGenerator implements ISqlGenerator {
 	private Map<Class<? extends Entity>, String> tableAlias;
 
 	static {
-		handlerMap.put(WhereType.EQUALS, Handlers.equalsHandler);
-		handlerMap.put(WhereType.FRONT_FUZZY, Handlers.frontFuzzyHandler);
-		handlerMap.put(WhereType.BACK_FUZZY, Handlers.backFuzzyHandler);
-		handlerMap.put(WhereType.FUZZY, Handlers.fuzzyHandler);
+		handlerMap.put(WhereType.EQUALS, WhereHandlers.equalsHandler);
+		handlerMap.put(WhereType.FRONT_FUZZY, WhereHandlers.frontFuzzyHandler);
+		handlerMap.put(WhereType.BACK_FUZZY, WhereHandlers.backFuzzyHandler);
+		handlerMap.put(WhereType.FUZZY, WhereHandlers.fuzzyHandler);
 	}
 
 	private QuerySqlGenerator(Builder builder) {

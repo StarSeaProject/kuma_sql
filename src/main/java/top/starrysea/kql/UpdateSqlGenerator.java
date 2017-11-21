@@ -10,7 +10,7 @@ import top.starrysea.kql.clause.WhereClause;
 import top.starrysea.kql.clause.WhereType;
 import top.starrysea.kql.entity.Entity;
 import top.starrysea.kql.entity.IBuilder;
-import top.starrysea.kql.handler.Handlers;
+import top.starrysea.kql.handler.WhereHandlers;
 import top.starrysea.kql.handler.IWhereHandler;
 
 public class UpdateSqlGenerator extends NonQuerySqlGenerator {
@@ -21,14 +21,14 @@ public class UpdateSqlGenerator extends NonQuerySqlGenerator {
 	private static Map<WhereType, IWhereHandler> handlerMap = new HashMap<>();
 
 	static {
-		handlerMap.put(WhereType.EQUALS, Handlers.equalsHandler);
-		handlerMap.put(WhereType.FRONT_FUZZY, Handlers.frontFuzzyHandler);
-		handlerMap.put(WhereType.BACK_FUZZY, Handlers.backFuzzyHandler);
-		handlerMap.put(WhereType.FUZZY, Handlers.fuzzyHandler);
-		handlerMap.put(WhereType.GREATER, Handlers.greaterHandler);
-		handlerMap.put(WhereType.GREATER_EQUAL, Handlers.greaterEqualHandler);
-		handlerMap.put(WhereType.LESS, Handlers.lessHandler);
-		handlerMap.put(WhereType.LESS_EQUAL, Handlers.lessEqualHandler);
+		handlerMap.put(WhereType.EQUALS, WhereHandlers.equalsHandler);
+		handlerMap.put(WhereType.FRONT_FUZZY, WhereHandlers.frontFuzzyHandler);
+		handlerMap.put(WhereType.BACK_FUZZY, WhereHandlers.backFuzzyHandler);
+		handlerMap.put(WhereType.FUZZY, WhereHandlers.fuzzyHandler);
+		handlerMap.put(WhereType.GREATER, WhereHandlers.greaterHandler);
+		handlerMap.put(WhereType.GREATER_EQUAL, WhereHandlers.greaterEqualHandler);
+		handlerMap.put(WhereType.LESS, WhereHandlers.lessHandler);
+		handlerMap.put(WhereType.LESS_EQUAL, WhereHandlers.lessEqualHandler);
 	}
 
 	private UpdateSqlGenerator(Builder builder) {

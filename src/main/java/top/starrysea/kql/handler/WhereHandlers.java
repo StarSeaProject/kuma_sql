@@ -1,6 +1,6 @@
 package top.starrysea.kql.handler;
 
-public class Handlers {
+public class WhereHandlers {
 	public final static IWhereHandler equalsHandler = (where, whereBuffer, preParams) -> {
 		whereBuffer.insert(whereBuffer.indexOf("WHERE") + 5, " " + where.getColumnName() + " = ? AND");
 		preParams.add(where.getValue());
