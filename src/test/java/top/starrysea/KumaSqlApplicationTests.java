@@ -7,11 +7,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import top.starrysea.KumaSqlApplication;
-import top.starrysea.facede.KumaSqlDao;
-import top.starrysea.facede.ListSqlResult;
-import top.starrysea.facede.OperationType;
-import top.starrysea.facede.SqlResult;
-import top.starrysea.sql.clause.WhereType;
+import top.starrysea.kql.clause.WhereType;
+import top.starrysea.kql.facede.KumaSqlDao;
+import top.starrysea.kql.facede.ListSqlResult;
+import top.starrysea.kql.facede.OperationType;
+import top.starrysea.kql.facede.SqlResult;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = KumaSqlApplication.class)
@@ -25,7 +25,7 @@ public class KumaSqlApplicationTests {
 		Work work = new Work.Builder().workName("a").build();
 		ListSqlResult result = (ListSqlResult) kumaSqlDao.select("work_id").select("work_name").from(Work.class)
 				.where("work_name", WhereType.FUZZY, work.getWorkName()).orderBy("work_uploadtime").limit(0, 10)
-				.end((rs, row) -> new Work.Builder().workId(rs.getInt("work_id")).workName("work_name").build());
+				.endForList((rs, row) -> new Work.Builder().workId(rs.getInt("work_id")).workName("work_name").build());
 		System.out.println(result.getResult());
 	}
 	
@@ -33,7 +33,7 @@ public class KumaSqlApplicationTests {
 	public void insertTest() {
 		kumaSqlDao.changeMode(OperationType.INSERT);
 		Work work = new Work.Builder().workName("a").workUploadTime("2017-08-09").workPdfpath("asdasjdaslkd/asdasd").workStock(100).build();
-		SqlResult result = kumaSqlDao.insert("work_name", work.getWorkName()).insert("work_uploadtime", work.getWorkUploadTime()).insert("work_pdfpath", work.getWorkPdfpath()).insert("work_stock", work.getWorkStock()).table(Work.class).end(null);
+		SqlResult result = kumaSqlDao.insert("work_name", work.getWorkName()).insert("work_uploadtime", work.getWorkUploadTime()).insert("work_pdfpath", work.getWorkPdfpath()).insert("work_stock", work.getWorkStock()).table(Work.class).end();
 		System.out.println(result.isSuccessed());
 	}
 	

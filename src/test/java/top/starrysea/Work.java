@@ -1,7 +1,7 @@
 package top.starrysea;
 
-import top.starrysea.entity.Entity;
-import top.starrysea.entity.IBuilder;
+import top.starrysea.kql.entity.Entity;
+import top.starrysea.kql.entity.IBuilder;
 
 public class Work extends Entity {
 
