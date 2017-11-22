@@ -51,7 +51,7 @@ public class QuerySqlGenerator implements ISqlGenerator {
 		this.whereClauses = builder.whereClauses;
 		this.orderByClauses = builder.orderByClauses;
 		this.limitClause = builder.limitClause;
-		this.joinClauses = builder.leftJoinClauses;
+		this.joinClauses = builder.joinClauses;
 		this.tableAlias = builder.tableAlias;
 	}
 
@@ -66,7 +66,7 @@ public class QuerySqlGenerator implements ISqlGenerator {
 		private List<WhereClause> whereClauses;
 		private List<OrderClause> orderByClauses;
 		private LimitClause limitClause;
-		private List<JoinClause> leftJoinClauses;
+		private List<JoinClause> joinClauses;
 		private Map<Class<? extends Entity>, String> tableAlias;
 
 		public Builder() {
@@ -74,7 +74,7 @@ public class QuerySqlGenerator implements ISqlGenerator {
 			tableClauses = new ArrayList<>();
 			whereClauses = new ArrayList<>();
 			orderByClauses = new ArrayList<>();
-			leftJoinClauses = new ArrayList<>();
+			joinClauses = new ArrayList<>();
 			tableAlias = new HashMap<>();
 		}
 
@@ -160,7 +160,7 @@ public class QuerySqlGenerator implements ISqlGenerator {
 				Class<? extends Entity> source, String sourceColumn) {
 			JoinClause leftJoinClause = JoinClause.of(JoinType.INNER, target, alias, targetColumn, source,
 					sourceColumn);
-			this.leftJoinClauses.add(leftJoinClause);
+			this.joinClauses.add(leftJoinClause);
 			this.tableAlias.put(target, alias);
 			return this;
 		}
@@ -168,7 +168,7 @@ public class QuerySqlGenerator implements ISqlGenerator {
 		public Builder leftjoin(Class<? extends Entity> target, String alias, String targetColumn,
 				Class<? extends Entity> source, String sourceColumn) {
 			JoinClause leftJoinClause = JoinClause.of(JoinType.LEFT, target, alias, targetColumn, source, sourceColumn);
-			this.leftJoinClauses.add(leftJoinClause);
+			this.joinClauses.add(leftJoinClause);
 			this.tableAlias.put(target, alias);
 			return this;
 		}
@@ -177,7 +177,7 @@ public class QuerySqlGenerator implements ISqlGenerator {
 				Class<? extends Entity> source, String sourceColumn) {
 			JoinClause leftJoinClause = JoinClause.of(JoinType.RIGHT, target, alias, targetColumn, source,
 					sourceColumn);
-			this.leftJoinClauses.add(leftJoinClause);
+			this.joinClauses.add(leftJoinClause);
 			this.tableAlias.put(target, alias);
 			return this;
 		}
@@ -185,7 +185,15 @@ public class QuerySqlGenerator implements ISqlGenerator {
 		public Builder fulljoin(Class<? extends Entity> target, String alias, String targetColumn,
 				Class<? extends Entity> source, String sourceColumn) {
 			JoinClause leftJoinClause = JoinClause.of(JoinType.FULL, target, alias, targetColumn, source, sourceColumn);
-			this.leftJoinClauses.add(leftJoinClause);
+			this.joinClauses.add(leftJoinClause);
+			this.tableAlias.put(target, alias);
+			return this;
+		}
+		
+		public Builder crossjoin(Class<? extends Entity> target, String alias, String targetColumn,
+				Class<? extends Entity> source, String sourceColumn) {
+			JoinClause leftJoinClause = JoinClause.of(JoinType.CROSS, target, alias, targetColumn, source, sourceColumn);
+			this.joinClauses.add(leftJoinClause);
 			this.tableAlias.put(target, alias);
 			return this;
 		}

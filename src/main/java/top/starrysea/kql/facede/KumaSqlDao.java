@@ -49,6 +49,9 @@ public interface KumaSqlDao {
 
 	KumaSqlDao fulljoin(Class<? extends Entity> target, String alias, String targetColumn,
 			Class<? extends Entity> source, String sourceColumn);
+	
+	KumaSqlDao crossjoin(Class<? extends Entity> target, String alias, String targetColumn,
+			Class<? extends Entity> source, String sourceColumn);
 
 	KumaSqlDao insert(String columnName, Object value);
 

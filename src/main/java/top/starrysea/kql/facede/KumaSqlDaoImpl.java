@@ -214,6 +214,16 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 		queryBuilder.fulljoin(target, alias, targetColumn, source, sourceColumn);
 		return this;
 	}
+	
+	@Override
+	public KumaSqlDao crossjoin(Class<? extends Entity> target, String alias, String targetColumn,
+			Class<? extends Entity> source, String sourceColumn) {
+		if (operationType.get() != OperationType.SELECT)
+			throw new IllegalStateException("当前不是SELECT模式,请调用changeMode进入SELECT模式!");
+		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
+		queryBuilder.crossjoin(target, alias, targetColumn, source, sourceColumn);
+		return this;
+	}
 
 	@Override
 	public KumaSqlDao insert(String columnName, Object value) {
