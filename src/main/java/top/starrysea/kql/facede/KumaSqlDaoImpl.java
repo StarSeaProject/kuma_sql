@@ -16,6 +16,7 @@ import top.starrysea.kql.SqlWithParams;
 import top.starrysea.kql.UpdateSqlGenerator;
 import top.starrysea.kql.clause.OrderByType;
 import top.starrysea.kql.clause.SelectClause;
+import top.starrysea.kql.clause.UpdateSetType;
 import top.starrysea.kql.clause.WhereType;
 import top.starrysea.kql.entity.Entity;
 import top.starrysea.kql.entity.IBuilder;
@@ -242,11 +243,11 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	}
 
 	@Override
-	public KumaSqlDao update(String columnName, Object value) {
+	public KumaSqlDao update(String columnName, UpdateSetType updateSetType, Object value) {
 		if (operationType.get() != OperationType.UPDATE)
 			throw new IllegalStateException("当前不是UPDATE模式,请调用changeMode进入INSERT模式!");
 		top.starrysea.kql.UpdateSqlGenerator.Builder updateBuilder = (top.starrysea.kql.UpdateSqlGenerator.Builder) builder;
-		updateBuilder.update(columnName, value);
+		updateBuilder.update(columnName, updateSetType, value);
 		return this;
 	}
 

@@ -26,9 +26,9 @@ public class DeleteGenerator extends Generator {
 		if (sqlGenerator.getWhereClauses().size() > 0) {
 			deleteBuilder.append("WHERE ");
 			for (WhereClause whereClause : sqlGenerator.getWhereClauses()) {
-				IWhereHandler handler = UpdateSqlGenerator.getHandlerMap().get(whereClause.getWhereType());
+				IWhereHandler handler = UpdateSqlGenerator.getWhereHandlerMap().get(whereClause.getWhereType());
 				HandleResult result = handler.handleWhereBuffer(whereClause, deleteBuilder, params);
-				deleteBuilder = result.getWhereBuffer();
+				deleteBuilder = result.getBuffer();
 				params = result.getPreParams();
 			}
 			deleteBuilder.delete(deleteBuilder.length() - 5, deleteBuilder.length());

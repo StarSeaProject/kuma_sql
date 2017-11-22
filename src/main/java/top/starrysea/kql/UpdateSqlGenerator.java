@@ -6,29 +6,37 @@ import java.util.List;
 import java.util.Map;
 
 import top.starrysea.kql.clause.UpdateSetClause;
+import top.starrysea.kql.clause.UpdateSetType;
 import top.starrysea.kql.clause.WhereClause;
 import top.starrysea.kql.clause.WhereType;
 import top.starrysea.kql.entity.Entity;
 import top.starrysea.kql.entity.IBuilder;
 import top.starrysea.kql.handler.WhereHandlers;
+import top.starrysea.kql.handler.IUpdateSetHandler;
 import top.starrysea.kql.handler.IWhereHandler;
+import top.starrysea.kql.handler.UpdateSetHandlers;
 
 public class UpdateSqlGenerator extends NonQuerySqlGenerator {
 
 	private Class<? extends Entity> table;
 	private List<UpdateSetClause> updateSetClauses;
 	private List<WhereClause> whereClauses;
-	private static Map<WhereType, IWhereHandler> handlerMap = new HashMap<>();
+	private static Map<WhereType, IWhereHandler> whereHandlerMap = new HashMap<>();
+	private static Map<UpdateSetType, IUpdateSetHandler> updateSetHandlerMap = new HashMap<>();
 
 	static {
-		handlerMap.put(WhereType.EQUALS, WhereHandlers.equalsHandler);
-		handlerMap.put(WhereType.FRONT_FUZZY, WhereHandlers.frontFuzzyHandler);
-		handlerMap.put(WhereType.BACK_FUZZY, WhereHandlers.backFuzzyHandler);
-		handlerMap.put(WhereType.FUZZY, WhereHandlers.fuzzyHandler);
-		handlerMap.put(WhereType.GREATER, WhereHandlers.greaterHandler);
-		handlerMap.put(WhereType.GREATER_EQUAL, WhereHandlers.greaterEqualHandler);
-		handlerMap.put(WhereType.LESS, WhereHandlers.lessHandler);
-		handlerMap.put(WhereType.LESS_EQUAL, WhereHandlers.lessEqualHandler);
+		whereHandlerMap.put(WhereType.EQUALS, WhereHandlers.equalsHandler);
+		whereHandlerMap.put(WhereType.FRONT_FUZZY, WhereHandlers.frontFuzzyHandler);
+		whereHandlerMap.put(WhereType.BACK_FUZZY, WhereHandlers.backFuzzyHandler);
+		whereHandlerMap.put(WhereType.FUZZY, WhereHandlers.fuzzyHandler);
+		whereHandlerMap.put(WhereType.GREATER, WhereHandlers.greaterHandler);
+		whereHandlerMap.put(WhereType.GREATER_EQUAL, WhereHandlers.greaterEqualHandler);
+		whereHandlerMap.put(WhereType.LESS, WhereHandlers.lessHandler);
+		whereHandlerMap.put(WhereType.LESS_EQUAL, WhereHandlers.lessEqualHandler);
+
+		updateSetHandlerMap.put(UpdateSetType.ASSIGN, UpdateSetHandlers.assignHandler);
+		updateSetHandlerMap.put(UpdateSetType.ADD, UpdateSetHandlers.addHandler);
+		updateSetHandlerMap.put(UpdateSetType.REDUCE, UpdateSetHandlers.reduceHandler);
 	}
 
 	private UpdateSqlGenerator(Builder builder) {
@@ -53,8 +61,8 @@ public class UpdateSqlGenerator extends NonQuerySqlGenerator {
 			return this;
 		}
 
-		public Builder update(String columnName, Object value) {
-			UpdateSetClause updateSetClause = UpdateSetClause.of(columnName, value);
+		public Builder update(String columnName, UpdateSetType updateSetType, Object value) {
+			UpdateSetClause updateSetClause = UpdateSetClause.of(columnName, updateSetType, value);
 			updateSetClauses.add(updateSetClause);
 			return this;
 		}
@@ -86,8 +94,12 @@ public class UpdateSqlGenerator extends NonQuerySqlGenerator {
 		return whereClauses;
 	}
 
-	public static Map<WhereType, IWhereHandler> getHandlerMap() {
-		return handlerMap;
+	public static Map<WhereType, IWhereHandler> getWhereHandlerMap() {
+		return whereHandlerMap;
+	}
+
+	public static Map<UpdateSetType, IUpdateSetHandler> getUpdateSetHandlerMap() {
+		return updateSetHandlerMap;
 	}
 
 	@Override

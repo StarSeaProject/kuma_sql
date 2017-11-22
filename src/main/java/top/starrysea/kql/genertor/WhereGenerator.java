@@ -30,7 +30,7 @@ public class WhereGenerator extends Generator {
 			if (isNotNull(where.getValue())) {
 				IWhereHandler handler = QuerySqlGenerator.getHandlerMap().get(where.getWhereType());
 				HandleResult result = handler.handleWhereBuffer(where, whereBuffer, params);
-				whereBuffer = result.getWhereBuffer();
+				whereBuffer = result.getBuffer();
 				params = result.getPreParams();
 			}
 		}

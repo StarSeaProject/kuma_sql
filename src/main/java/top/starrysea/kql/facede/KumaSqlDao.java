@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.RowMapper;
 
 import top.starrysea.kql.clause.OrderByType;
 import top.starrysea.kql.clause.SelectClause;
+import top.starrysea.kql.clause.UpdateSetType;
 import top.starrysea.kql.clause.WhereType;
 import top.starrysea.kql.entity.Entity;
 
@@ -12,7 +13,7 @@ public interface KumaSqlDao {
 	void changeMode(OperationType operationType);
 
 	KumaSqlDao select(SelectClause selectClause);
-	
+
 	KumaSqlDao select(String colunmName);
 
 	KumaSqlDao select(String colunmName, String alias);
@@ -53,12 +54,12 @@ public interface KumaSqlDao {
 
 	KumaSqlDao table(Class<? extends Entity> table);
 
-	KumaSqlDao update(String columnName, Object value);
+	KumaSqlDao update(String columnName, UpdateSetType updateSetType, Object value);
 
 	<T> ListSqlResult endForList(RowMapper<? extends Entity> rowMapper);
-	
+
 	<T> IntegerSqlResult endForNumber();
-	
+
 	<T> EntitySqlResult endForObject(RowMapper<? extends Entity> rowMapper);
 
 	<T> SqlResult end();

@@ -6,6 +6,7 @@ import top.starrysea.kql.UpdateSqlGenerator;
 import top.starrysea.kql.clause.UpdateSetClause;
 import top.starrysea.kql.clause.WhereClause;
 import top.starrysea.kql.handler.HandleResult;
+import top.starrysea.kql.handler.IUpdateSetHandler;
 import top.starrysea.kql.handler.IWhereHandler;
 
 import static top.starrysea.kql.common.Common.pojo2table;
@@ -25,16 +26,17 @@ public class UpdateGenerator extends Generator {
 		List<Object> params = new ArrayList<>();
 		updateBuilder.append("UPDATE " + pojo2table(sqlGenerator.getTable().getSimpleName()) + " SET ");
 		for (UpdateSetClause updateSetClause : sqlGenerator.getUpdateSetClauses()) {
-			updateBuilder.append(updateSetClause.getColumnName() + " = ? ");
-			updateBuilder.append(",");
-			params.add(updateSetClause.getValue());
+			IUpdateSetHandler handler=UpdateSqlGenerator.getUpdateSetHandlerMap().get(updateSetClause.getUpdateSetType());
+			HandleResult result = handler.handleUpdateBuffer(updateSetClause, updateBuilder, params);
+			updateBuilder = result.getBuffer();
+			params = result.getPreParams();
 		}
 		updateBuilder.deleteCharAt(updateBuilder.length() - 1);
 		updateBuilder.append("WHERE ");
 		for (WhereClause whereClause : sqlGenerator.getWhereClauses()) {
-			IWhereHandler handler = UpdateSqlGenerator.getHandlerMap().get(whereClause.getWhereType());
+			IWhereHandler handler = UpdateSqlGenerator.getWhereHandlerMap().get(whereClause.getWhereType());
 			HandleResult result = handler.handleWhereBuffer(whereClause, updateBuilder, params);
-			updateBuilder = result.getWhereBuffer();
+			updateBuilder = result.getBuffer();
 			params = result.getPreParams();
 		}
 		updateBuilder.delete(updateBuilder.length() - 5, updateBuilder.length());
