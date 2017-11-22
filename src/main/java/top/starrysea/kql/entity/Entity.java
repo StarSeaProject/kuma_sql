@@ -1,5 +1,8 @@
 package top.starrysea.kql.entity;
 
-public class Entity {
+public interface Entity {
 
+	default void print() {
+		System.out.println("");
+	}
 }

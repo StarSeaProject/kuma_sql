@@ -3,7 +3,7 @@ package top.starrysea;
 import top.starrysea.kql.entity.Entity;
 import top.starrysea.kql.entity.IBuilder;
 
-public class Work extends Entity {
+public class Work implements Entity {
 
 	private Integer workId;
 	private String workName;
