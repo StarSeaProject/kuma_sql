@@ -8,7 +8,7 @@ import top.starrysea.kql.ISqlGenerator;
 
 public class GeneratorFactory {
 
-	private static Map<Class<?>, Generator> generators = new HashMap<>();
+	private Map<Class<?>, Generator> generators = new HashMap<>();
 
 	private ISqlGenerator sqlGenerator;
 

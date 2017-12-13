@@ -4,13 +4,13 @@ public enum OrderByType {
 
 	ASC("ASC"), DESC("DESC");
 
-	private String orderByType;
+	private String orderByTypeInfo;
 
 	private OrderByType(String orderByType) {
-		this.orderByType = orderByType;
+		this.orderByTypeInfo = orderByType;
 	}
 
 	public String getType() {
-		return this.orderByType;
+		return this.orderByTypeInfo;
 	}
 }

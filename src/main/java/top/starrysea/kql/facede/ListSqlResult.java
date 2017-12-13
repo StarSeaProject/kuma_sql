@@ -6,14 +6,14 @@ import top.starrysea.kql.entity.Entity;
 
 public class ListSqlResult extends SqlResult {
 
-	private List<? extends Entity> result;
+	private List<Entity> result;
 
-	public <T> ListSqlResult(List<? extends Entity> result) {
+	public <T> ListSqlResult(List<Entity> result) {
 		super(true);
 		this.result = result;
 	}
 
-	public List<? extends Entity> getResult() {
+	public List<Entity> getResult() {
 		return result;
 	}
 

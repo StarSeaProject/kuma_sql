@@ -41,7 +41,7 @@ public class InsertSqlGenerator extends NonQuerySqlGenerator {
 		public InsertSqlGenerator build() {
 			if (table == null)
 				throw new IllegalArgumentException("当前没有设置要操作哪张表!");
-			if (insertClauses.size() == 0)
+			if (insertClauses.isEmpty())
 				throw new IllegalArgumentException("当前没有设置任何列!");
 			return new InsertSqlGenerator(this);
 		}

@@ -31,6 +31,8 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	private IBuilder<? extends ISqlGenerator> builder;
 
 	private ThreadLocal<OperationType> operationType = new ThreadLocal<>();
+	
+	private static final String NOT_SELECT_MODE_INFO = "当前不是SELECT模式,请调用changeMode进入SELECT模式!";
 
 	public KumaSqlDaoImpl() {
 		operationType.set(OperationType.SELECT);
@@ -57,7 +59,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 
 	public KumaSqlDao select(SelectClause selectClause) {
 		if (operationType.get() != OperationType.SELECT)
-			throw new IllegalStateException("当前不是SELECT模式,请调用changeMode进入SELECT模式!");
+			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
 		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
 		queryBuilder.select(selectClause);
 		return this;
@@ -65,7 +67,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 
 	public KumaSqlDao select(String colunmName) {
 		if (operationType.get() != OperationType.SELECT)
-			throw new IllegalStateException("当前不是SELECT模式,请调用changeMode进入SELECT模式!");
+			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
 		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
 		queryBuilder.select(colunmName);
 		return this;
@@ -73,7 +75,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 
 	public KumaSqlDao select(String colunmName, String alias) {
 		if (operationType.get() != OperationType.SELECT)
-			throw new IllegalStateException("当前不是SELECT模式,请调用changeMode进入SELECT模式!");
+			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
 		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
 		queryBuilder.select(colunmName, alias);
 		return this;
@@ -81,7 +83,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 
 	public KumaSqlDao from(Class<? extends Entity> table) {
 		if (operationType.get() != OperationType.SELECT)
-			throw new IllegalStateException("当前不是SELECT模式,请调用changeMode进入SELECT模式!");
+			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
 		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
 		queryBuilder.from(table);
 		return this;
@@ -89,7 +91,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 
 	public KumaSqlDao from(Class<? extends Entity> table, String alias) {
 		if (operationType.get() != OperationType.SELECT)
-			throw new IllegalStateException("当前不是SELECT模式,请调用changeMode进入SELECT模式!");
+			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
 		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
 		queryBuilder.from(table, alias);
 		return this;
@@ -109,7 +111,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 			deleteBuilder.where(columnName, whereType, value);
 			return this;
 		} else
-			throw new IllegalStateException("当前不是SELECT模式,请调用changeMode进入SELECT模式!");
+			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
 	}
 
 	public KumaSqlDao where(String columnName, String alias, WhereType whereType, Object value) {
@@ -118,13 +120,13 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 			queryBuilder.where(columnName, alias, whereType, value);
 			return this;
 		} else
-			throw new IllegalStateException("当前不是SELECT模式,请调用changeMode进入SELECT模式!");
+			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
 	}
 
 	@Override
 	public KumaSqlDao orderBy(String columnName) {
 		if (operationType.get() != OperationType.SELECT)
-			throw new IllegalStateException("当前不是SELECT模式,请调用changeMode进入SELECT模式!");
+			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
 		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
 		queryBuilder.orderBy(columnName);
 		return this;
@@ -133,7 +135,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	@Override
 	public KumaSqlDao orderBy(String columnName, OrderByType orderByType) {
 		if (operationType.get() != OperationType.SELECT)
-			throw new IllegalStateException("当前不是SELECT模式,请调用changeMode进入SELECT模式!");
+			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
 		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
 		queryBuilder.orderBy(columnName, orderByType);
 		return this;
@@ -142,7 +144,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	@Override
 	public KumaSqlDao orderBy(String columnName, String alias) {
 		if (operationType.get() != OperationType.SELECT)
-			throw new IllegalStateException("当前不是SELECT模式,请调用changeMode进入SELECT模式!");
+			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
 		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
 		queryBuilder.orderBy(columnName, alias);
 		return this;
@@ -151,7 +153,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	@Override
 	public KumaSqlDao orderBy(String columnName, String alias, OrderByType orderByType) {
 		if (operationType.get() != OperationType.SELECT)
-			throw new IllegalStateException("当前不是SELECT模式,请调用changeMode进入SELECT模式!");
+			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
 		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
 		queryBuilder.orderBy(columnName, alias, orderByType);
 		return this;
@@ -160,7 +162,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	@Override
 	public KumaSqlDao limit(int start) {
 		if (operationType.get() != OperationType.SELECT)
-			throw new IllegalStateException("当前不是SELECT模式,请调用changeMode进入SELECT模式!");
+			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
 		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
 		queryBuilder.limit(start);
 		return this;
@@ -169,7 +171,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	@Override
 	public KumaSqlDao limit(int start, int limit) {
 		if (operationType.get() != OperationType.SELECT)
-			throw new IllegalStateException("当前不是SELECT模式,请调用changeMode进入SELECT模式!");
+			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
 		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
 		queryBuilder.limit(start, limit);
 		return this;
@@ -179,7 +181,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	public KumaSqlDao innerjoin(Class<? extends Entity> target, String alias, String targetColumn,
 			Class<? extends Entity> source, String sourceColumn) {
 		if (operationType.get() != OperationType.SELECT)
-			throw new IllegalStateException("当前不是SELECT模式,请调用changeMode进入SELECT模式!");
+			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
 		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
 		queryBuilder.innerjoin(target, alias, targetColumn, source, sourceColumn);
 		return this;
@@ -189,7 +191,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	public KumaSqlDao leftjoin(Class<? extends Entity> target, String alias, String targetColumn,
 			Class<? extends Entity> source, String sourceColumn) {
 		if (operationType.get() != OperationType.SELECT)
-			throw new IllegalStateException("当前不是SELECT模式,请调用changeMode进入SELECT模式!");
+			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
 		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
 		queryBuilder.leftjoin(target, alias, targetColumn, source, sourceColumn);
 		return this;
@@ -199,7 +201,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	public KumaSqlDao rightjoin(Class<? extends Entity> target, String alias, String targetColumn,
 			Class<? extends Entity> source, String sourceColumn) {
 		if (operationType.get() != OperationType.SELECT)
-			throw new IllegalStateException("当前不是SELECT模式,请调用changeMode进入SELECT模式!");
+			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
 		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
 		queryBuilder.rightjoin(target, alias, targetColumn, source, sourceColumn);
 		return this;
@@ -209,7 +211,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	public KumaSqlDao fulljoin(Class<? extends Entity> target, String alias, String targetColumn,
 			Class<? extends Entity> source, String sourceColumn) {
 		if (operationType.get() != OperationType.SELECT)
-			throw new IllegalStateException("当前不是SELECT模式,请调用changeMode进入SELECT模式!");
+			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
 		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
 		queryBuilder.fulljoin(target, alias, targetColumn, source, sourceColumn);
 		return this;
@@ -219,7 +221,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	public KumaSqlDao crossjoin(Class<? extends Entity> target, String alias, String targetColumn,
 			Class<? extends Entity> source, String sourceColumn) {
 		if (operationType.get() != OperationType.SELECT)
-			throw new IllegalStateException("当前不是SELECT模式,请调用changeMode进入SELECT模式!");
+			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
 		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
 		queryBuilder.crossjoin(target, alias, targetColumn, source, sourceColumn);
 		return this;
@@ -262,17 +264,17 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	}
 
 	@Override
-	public <T> ListSqlResult endForList(RowMapper<? extends Entity> rowMapper) {
+	public ListSqlResult endForList(RowMapper<Entity> rowMapper) {
 		if (operationType.get() != OperationType.SELECT)
 			throw new UnsupportedOperationException("endForList方法仅支持SELECT模式,增删改请使用无参数版本的end方法");
 		QuerySqlGenerator querySqlGenerator = (QuerySqlGenerator) builder.build();
 		SqlWithParams sqlWithParams = querySqlGenerator.generate();
-		List<? extends Entity> result = template.query(sqlWithParams.getSql(), sqlWithParams.getParams(), rowMapper);
+		List<Entity> result = template.query(sqlWithParams.getSql(), sqlWithParams.getParams(), rowMapper);
 		return new ListSqlResult(result);
 	}
 
 	@Override
-	public <T> IntegerSqlResult endForNumber() {
+	public IntegerSqlResult endForNumber() {
 		if (operationType.get() != OperationType.SELECT)
 			throw new UnsupportedOperationException("endForNumber方法仅支持SELECT模式,增删改请使用无参数版本的end方法");
 		QuerySqlGenerator querySqlGenerator = (QuerySqlGenerator) builder.build();
@@ -284,7 +286,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	}
 
 	@Override
-	public <T> EntitySqlResult endForObject(RowMapper<? extends Entity> rowMapper) {
+	public EntitySqlResult endForObject(RowMapper<Entity> rowMapper) {
 		if (operationType.get() != OperationType.SELECT)
 			throw new UnsupportedOperationException("endForObject方法仅支持SELECT模式,增删改请使用无参数版本的end方法");
 		QuerySqlGenerator querySqlGenerator = (QuerySqlGenerator) builder.build();
@@ -294,7 +296,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	}
 
 	@Override
-	public <T> SqlResult end() {
+	public SqlResult end() {
 		if (operationType.get() == OperationType.SELECT)
 			throw new UnsupportedOperationException("该end方法不支持SELECT模式");
 		SqlWithParams sqlWithParams = builder.build().generate();

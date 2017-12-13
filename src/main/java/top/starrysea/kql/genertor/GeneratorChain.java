@@ -8,22 +8,22 @@ import top.starrysea.kql.SqlWithParams;
 
 public class GeneratorChain {
 
-	private List<Generator> generatorChain = new ArrayList<>();
+	private List<Generator> chain = new ArrayList<>();
 
-	private static GeneratorFactory generatorFactory;
+	private GeneratorFactory generatorFactory;
 
 	public GeneratorChain(QuerySqlGenerator sqlGenerator) {
 		generatorFactory = new GeneratorFactory(sqlGenerator);
 	}
 
 	public void addGenerator(Class<?> generatortype) {
-		generatorChain.add((Generator) generatorFactory.getGenerator(generatortype));
+		chain.add((Generator) generatorFactory.getGenerator(generatortype));
 	}
 
 	public SqlWithParams startGenerator() {
-		for (int i = 0; i < generatorChain.size() - 1; i++) {
-			generatorChain.get(i).setNextGenerator(generatorChain.get(i + 1));
+		for (int i = 0; i < chain.size() - 1; i++) {
+			chain.get(i).setNextGenerator(chain.get(i + 1));
 		}
-		return generatorChain.get(0).generate(new SqlWithParams());
+		return chain.get(0).generate(new SqlWithParams());
 	}
 }

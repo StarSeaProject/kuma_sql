@@ -20,7 +20,7 @@ public class WhereGenerator extends Generator {
 
 	@Override
 	public SqlWithParams generate(SqlWithParams sqlWithParams) {
-		StringBuffer sqlBuffer = new StringBuffer(sqlWithParams.getSql());
+		StringBuilder sqlBuffer = new StringBuilder(sqlWithParams.getSql());
 		List<WhereClause> whereClauses = sqlGenerator.getWhereClauses();
 		StringBuilder whereBuffer = new StringBuilder();
 		List<Object> params = new ArrayList<>();

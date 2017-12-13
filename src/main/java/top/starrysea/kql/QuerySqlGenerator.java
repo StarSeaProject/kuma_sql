@@ -1,6 +1,7 @@
 package top.starrysea.kql;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class QuerySqlGenerator implements ISqlGenerator {
 	private List<WhereClause> whereClauses;
 	private List<OrderClause> orderByClauses;
 	private LimitClause limitClause;
-	private static Map<WhereType, IWhereHandler> handlerMap = new HashMap<>();
+	private static Map<WhereType, IWhereHandler> handlerMap = new EnumMap<>(WhereType.class);
 	private List<JoinClause> joinClauses;
 	private Map<Class<? extends Entity>, String> tableAlias;
 
@@ -82,7 +83,7 @@ public class QuerySqlGenerator implements ISqlGenerator {
 			this.selectClauses.add(selectClause);
 			return this;
 		}
-		
+
 		public Builder select(String colunmName) {
 			SelectClause selectClause = SelectClause.of(colunmName);
 			this.selectClauses.add(selectClause);
@@ -145,14 +146,12 @@ public class QuerySqlGenerator implements ISqlGenerator {
 		}
 
 		public Builder limit(int start) {
-			LimitClause limitClause = LimitClause.of(start);
-			this.limitClause = limitClause;
+			this.limitClause = LimitClause.of(start);
 			return this;
 		}
 
 		public Builder limit(int start, int limit) {
-			LimitClause limitClause = LimitClause.of(start, limit);
-			this.limitClause = limitClause;
+			this.limitClause = LimitClause.of(start, limit);
 			return this;
 		}
 
@@ -189,10 +188,11 @@ public class QuerySqlGenerator implements ISqlGenerator {
 			this.tableAlias.put(target, alias);
 			return this;
 		}
-		
+
 		public Builder crossjoin(Class<? extends Entity> target, String alias, String targetColumn,
 				Class<? extends Entity> source, String sourceColumn) {
-			JoinClause leftJoinClause = JoinClause.of(JoinType.CROSS, target, alias, targetColumn, source, sourceColumn);
+			JoinClause leftJoinClause = JoinClause.of(JoinType.CROSS, target, alias, targetColumn, source,
+					sourceColumn);
 			this.joinClauses.add(leftJoinClause);
 			this.tableAlias.put(target, alias);
 			return this;
@@ -200,9 +200,9 @@ public class QuerySqlGenerator implements ISqlGenerator {
 
 		@Override
 		public QuerySqlGenerator build() {
-			if (selectClauses.size() == 0)
+			if (selectClauses.isEmpty())
 				throw new IllegalArgumentException("当前没有select子句!至少要添加一个selectClause!");
-			if (tableClauses.size() == 0)
+			if (tableClauses.isEmpty())
 				throw new IllegalArgumentException("当前没有from子句!至少要添加一个表!");
 			return new QuerySqlGenerator(this);
 		}
@@ -246,13 +246,12 @@ public class QuerySqlGenerator implements ISqlGenerator {
 		generatorChain.addGenerator(SelectGenerator.class);
 		generatorChain.addGenerator(TableGenerator.class);
 		generatorChain.addGenerator(WhereGenerator.class);
-		if (orderByClauses.size() != 0)
+		if (!orderByClauses.isEmpty())
 			generatorChain.addGenerator(OrderByGenerator.class);
 		if (limitClause != null)
 			generatorChain.addGenerator(LimitGenerator.class);
-		if (joinClauses.size() != 0)
+		if (!joinClauses.isEmpty())
 			generatorChain.addGenerator(JoinGenerator.class);
-		SqlWithParams sqlWithParams = generatorChain.startGenerator();
-		return sqlWithParams;
+		return generatorChain.startGenerator();
 	}
 }

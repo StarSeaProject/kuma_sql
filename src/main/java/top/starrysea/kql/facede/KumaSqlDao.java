@@ -59,11 +59,11 @@ public interface KumaSqlDao {
 
 	KumaSqlDao update(String columnName, UpdateSetType updateSetType, Object value);
 
-	<T> ListSqlResult endForList(RowMapper<? extends Entity> rowMapper);
+	ListSqlResult endForList(RowMapper<Entity> rowMapper);
 
-	<T> IntegerSqlResult endForNumber();
+	IntegerSqlResult endForNumber();
 
-	<T> EntitySqlResult endForObject(RowMapper<? extends Entity> rowMapper);
+	EntitySqlResult endForObject(RowMapper<Entity> rowMapper);
 
-	<T> SqlResult end();
+	SqlResult end();
 }

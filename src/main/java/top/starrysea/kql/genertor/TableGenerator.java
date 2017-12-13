@@ -13,7 +13,7 @@ public class TableGenerator extends Generator {
 
 	@Override
 	public SqlWithParams generate(SqlWithParams sqlWithParams) {
-		StringBuffer sqlBuffer = new StringBuffer(sqlWithParams.getSql());
+		StringBuilder sqlBuffer = new StringBuilder(sqlWithParams.getSql());
 		sqlBuffer.append("FROM ");
 		for (int i = 0; i < sqlGenerator.getTableClauses().size(); i++) {
 			sqlBuffer.append(pojo2table(sqlGenerator.getTableClauses().get(i).getTable().getSimpleName()));

@@ -1,5 +1,6 @@
 package top.starrysea.kql;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import top.starrysea.kql.clause.InsertClause;
@@ -53,7 +54,7 @@ public class SqlGeneratorAdapter {
 			DeleteSqlGenerator temp = (DeleteSqlGenerator) sqlGenerator;
 			return temp.getWhereClauses();
 		} else
-			return null;
+			return new ArrayList<>();
 	}
 
 	public List<OrderClause> getOrderByClauses() {

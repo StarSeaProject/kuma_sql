@@ -17,12 +17,12 @@ public class Common {
 			return result;
 		if (object instanceof String) {
 			String temp = (String) object;
-			if (temp != null && !temp.equals(""))
+			if (!temp.equals(""))
 				result = true;
 			else
 				result = false;
 		} else if (object instanceof Entity) {
-			result = (object != null ? true : false);
+			result = true;
 		} else if (object instanceof Integer) {
 			int i = (int) object;
 			if (i == 0)
@@ -42,7 +42,7 @@ public class Common {
 			}
 		}
 		tableName.append(Character.toLowerCase(pojoName.charAt(0)));
-		if (uppercaseIndex.size() > 0) {
+		if (!uppercaseIndex.isEmpty()) {
 			for (Integer index : uppercaseIndex) {
 				tableName.append(pojoName.substring(1, index));
 				tableName.append("_" + Character.toLowerCase(pojoName.charAt(index)));

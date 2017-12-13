@@ -16,7 +16,7 @@ public class OrderByGenerator extends Generator {
 
 	@Override
 	public SqlWithParams generate(SqlWithParams sqlWithParams) {
-		if (sqlGenerator.getOrderByClauses().size() == 0) {
+		if (sqlGenerator.getOrderByClauses().isEmpty()) {
 			return sqlWithParams;
 		}
 		List<String> orderBy = new ArrayList<>();

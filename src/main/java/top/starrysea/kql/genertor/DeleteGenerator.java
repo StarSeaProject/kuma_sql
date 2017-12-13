@@ -23,7 +23,7 @@ public class DeleteGenerator extends Generator {
 		StringBuilder deleteBuilder = new StringBuilder();
 		List<Object> params = new ArrayList<>();
 		deleteBuilder.append("DELETE FROM " + pojo2table(sqlGenerator.getTable().getSimpleName()) + " ");
-		if (sqlGenerator.getWhereClauses().size() > 0) {
+		if (!sqlGenerator.getWhereClauses().isEmpty()) {
 			deleteBuilder.append("WHERE ");
 			for (WhereClause whereClause : sqlGenerator.getWhereClauses()) {
 				IWhereHandler handler = UpdateSqlGenerator.getWhereHandlerMap().get(whereClause.getWhereType());

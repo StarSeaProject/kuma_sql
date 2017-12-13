@@ -3,9 +3,9 @@ package top.starrysea.kql.clause;
 public class SelectClause {
 
 	private String colunmName;
-	public final static SelectClause COUNT = SelectClause.of("COUNT(*)");
-	public final static SelectClause MAX = SelectClause.of("MAX(*)");
-	public final static SelectClause MIN = SelectClause.of("MIN(*)");
+	public static final SelectClause COUNT = SelectClause.of("COUNT(*)");
+	public static final SelectClause MAX = SelectClause.of("MAX(*)");
+	public static final SelectClause MIN = SelectClause.of("MIN(*)");
 
 	public static SelectClause of(String colunmName) {
 		SelectClause selectClause = new SelectClause();

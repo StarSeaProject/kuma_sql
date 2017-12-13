@@ -1,7 +1,7 @@
 package top.starrysea.kql;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,8 +21,8 @@ public class UpdateSqlGenerator extends NonQuerySqlGenerator {
 	private Class<? extends Entity> table;
 	private List<UpdateSetClause> updateSetClauses;
 	private List<WhereClause> whereClauses;
-	private static Map<WhereType, IWhereHandler> whereHandlerMap = new HashMap<>();
-	private static Map<UpdateSetType, IUpdateSetHandler> updateSetHandlerMap = new HashMap<>();
+	private static Map<WhereType, IWhereHandler> whereHandlerMap = new EnumMap<>(WhereType.class);
+	private static Map<UpdateSetType, IUpdateSetHandler> updateSetHandlerMap = new EnumMap<>(UpdateSetType.class);
 
 	static {
 		whereHandlerMap.put(WhereType.EQUALS, WhereHandlers.equalsHandler);

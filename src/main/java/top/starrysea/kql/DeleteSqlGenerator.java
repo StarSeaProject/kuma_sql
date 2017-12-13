@@ -1,9 +1,11 @@
 package top.starrysea.kql;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import top.starrysea.kql.clause.WhereClause;
 import top.starrysea.kql.clause.WhereType;
@@ -14,9 +16,10 @@ import top.starrysea.kql.handler.IWhereHandler;
 
 public class DeleteSqlGenerator extends NonQuerySqlGenerator {
 
+	private static final Logger logger = LoggerFactory.getLogger(DeleteSqlGenerator.class);
 	private Class<? extends Entity> table;
 	private List<WhereClause> whereClauses;
-	private static Map<WhereType, IWhereHandler> handlerMap = new HashMap<>();
+	private static EnumMap<WhereType, IWhereHandler> handlerMap = new EnumMap<>(WhereType.class);
 
 	static {
 		handlerMap.put(WhereType.EQUALS, WhereHandlers.equalsHandler);
@@ -58,8 +61,8 @@ public class DeleteSqlGenerator extends NonQuerySqlGenerator {
 		public DeleteSqlGenerator build() {
 			if (table == null)
 				throw new IllegalArgumentException("当前没有设置要操作哪张表!");
-			if (whereClauses.size() == 0) {
-				System.err.println("生成的delete语句没有where条件,将会删掉整张表");
+			if (whereClauses.isEmpty()) {
+				logger.error("生成的delete语句没有where条件,将会删掉整张表");
 			}
 			return new DeleteSqlGenerator(this);
 		}
