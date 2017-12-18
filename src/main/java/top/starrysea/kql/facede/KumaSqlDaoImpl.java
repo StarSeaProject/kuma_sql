@@ -5,7 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import top.starrysea.kql.DeleteSqlGenerator;
@@ -302,6 +305,15 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 		SqlWithParams sqlWithParams = builder.build().generate();
 		template.update(sqlWithParams.getSql(), sqlWithParams.getParams());
 		return new SqlResult(true);
+	}
+
+	@Override
+	public SqlResult batchEnd(PreparedStatementCreator ps) {
+		if (operationType.get() == OperationType.SELECT)
+			throw new UnsupportedOperationException("该end方法不支持SELECT模式");
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		template.update(ps, keyHolder);
+		return null;
 	}
 
 }

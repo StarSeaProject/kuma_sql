@@ -1,5 +1,6 @@
 package top.starrysea.kql.facede;
 
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 
 import top.starrysea.kql.clause.OrderByType;
@@ -66,4 +67,6 @@ public interface KumaSqlDao {
 	EntitySqlResult endForObject(RowMapper<Entity> rowMapper);
 
 	SqlResult end();
+	
+	SqlResult batchEnd(PreparedStatementCreator ps);
 }
