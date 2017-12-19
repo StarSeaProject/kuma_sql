@@ -1,7 +1,5 @@
 package top.starrysea.kql.facede;
 
-import java.util.List;
-
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 

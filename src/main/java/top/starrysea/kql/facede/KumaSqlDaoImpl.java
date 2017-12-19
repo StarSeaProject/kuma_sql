@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -37,7 +39,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	@Autowired
 	private JdbcTemplate template;
 
-	private IBuilder<? extends ISqlGenerator> builder;
+	private ThreadLocal<IBuilder<? extends ISqlGenerator>> builder = new ThreadLocal<>();
 
 	private ThreadLocal<OperationType> operationType = new ThreadLocal<>();
 
@@ -45,23 +47,23 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 
 	public KumaSqlDaoImpl() {
 		operationType.set(OperationType.SELECT);
-		builder = new QuerySqlGenerator.Builder();
+		builder.set(new QuerySqlGenerator.Builder());
 	}
 
 	public void changeMode(OperationType operationType) {
 		this.operationType.set(operationType);
 		switch (operationType) {
 		case INSERT:
-			builder = new InsertSqlGenerator.Builder();
+			builder.set(new InsertSqlGenerator.Builder());
 			break;
 		case DELETE:
-			builder = new DeleteSqlGenerator.Builder();
+			builder.set(new DeleteSqlGenerator.Builder());
 			break;
 		case SELECT:
-			builder = new QuerySqlGenerator.Builder();
+			builder.set(new QuerySqlGenerator.Builder());
 			break;
 		case UPDATE:
-			builder = new UpdateSqlGenerator.Builder();
+			builder.set(new UpdateSqlGenerator.Builder());
 			break;
 		}
 	}
@@ -69,7 +71,8 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	public KumaSqlDao select(SelectClause selectClause) {
 		if (operationType.get() != OperationType.SELECT)
 			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
-		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
+		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder
+				.get();
 		queryBuilder.select(selectClause);
 		return this;
 	}
@@ -77,7 +80,8 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	public KumaSqlDao select(String colunmName) {
 		if (operationType.get() != OperationType.SELECT)
 			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
-		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
+		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder
+				.get();
 		queryBuilder.select(colunmName);
 		return this;
 	}
@@ -85,7 +89,8 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	public KumaSqlDao select(String colunmName, String alias) {
 		if (operationType.get() != OperationType.SELECT)
 			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
-		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
+		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder
+				.get();
 		queryBuilder.select(colunmName, alias);
 		return this;
 	}
@@ -93,7 +98,8 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	public KumaSqlDao from(Class<? extends Entity> table) {
 		if (operationType.get() != OperationType.SELECT)
 			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
-		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
+		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder
+				.get();
 		queryBuilder.from(table);
 		return this;
 	}
@@ -101,22 +107,26 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	public KumaSqlDao from(Class<? extends Entity> table, String alias) {
 		if (operationType.get() != OperationType.SELECT)
 			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
-		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
+		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder
+				.get();
 		queryBuilder.from(table, alias);
 		return this;
 	}
 
 	public KumaSqlDao where(String columnName, WhereType whereType, Object value) {
 		if (operationType.get() == OperationType.SELECT) {
-			top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
+			top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder
+					.get();
 			queryBuilder.where(columnName, whereType, value);
 			return this;
 		} else if (operationType.get() == OperationType.UPDATE) {
-			top.starrysea.kql.UpdateSqlGenerator.Builder updateBuilder = (top.starrysea.kql.UpdateSqlGenerator.Builder) builder;
+			top.starrysea.kql.UpdateSqlGenerator.Builder updateBuilder = (top.starrysea.kql.UpdateSqlGenerator.Builder) builder
+					.get();
 			updateBuilder.where(columnName, whereType, value);
 			return this;
 		} else if (operationType.get() == OperationType.DELETE) {
-			top.starrysea.kql.DeleteSqlGenerator.Builder deleteBuilder = (top.starrysea.kql.DeleteSqlGenerator.Builder) builder;
+			top.starrysea.kql.DeleteSqlGenerator.Builder deleteBuilder = (top.starrysea.kql.DeleteSqlGenerator.Builder) builder
+					.get();
 			deleteBuilder.where(columnName, whereType, value);
 			return this;
 		} else
@@ -125,7 +135,8 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 
 	public KumaSqlDao where(String columnName, String alias, WhereType whereType, Object value) {
 		if (operationType.get() == OperationType.SELECT) {
-			top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
+			top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder
+					.get();
 			queryBuilder.where(columnName, alias, whereType, value);
 			return this;
 		} else
@@ -136,7 +147,8 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	public KumaSqlDao orderBy(String columnName) {
 		if (operationType.get() != OperationType.SELECT)
 			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
-		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
+		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder
+				.get();
 		queryBuilder.orderBy(columnName);
 		return this;
 	}
@@ -145,7 +157,8 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	public KumaSqlDao orderBy(String columnName, OrderByType orderByType) {
 		if (operationType.get() != OperationType.SELECT)
 			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
-		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
+		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder
+				.get();
 		queryBuilder.orderBy(columnName, orderByType);
 		return this;
 	}
@@ -154,7 +167,8 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	public KumaSqlDao orderBy(String columnName, String alias) {
 		if (operationType.get() != OperationType.SELECT)
 			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
-		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
+		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder
+				.get();
 		queryBuilder.orderBy(columnName, alias);
 		return this;
 	}
@@ -163,7 +177,8 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	public KumaSqlDao orderBy(String columnName, String alias, OrderByType orderByType) {
 		if (operationType.get() != OperationType.SELECT)
 			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
-		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
+		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder
+				.get();
 		queryBuilder.orderBy(columnName, alias, orderByType);
 		return this;
 	}
@@ -172,7 +187,8 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	public KumaSqlDao limit(int start) {
 		if (operationType.get() != OperationType.SELECT)
 			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
-		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
+		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder
+				.get();
 		queryBuilder.limit(start);
 		return this;
 	}
@@ -181,7 +197,8 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	public KumaSqlDao limit(int start, int limit) {
 		if (operationType.get() != OperationType.SELECT)
 			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
-		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
+		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder
+				.get();
 		queryBuilder.limit(start, limit);
 		return this;
 	}
@@ -191,7 +208,8 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 			Class<? extends Entity> source, String sourceColumn) {
 		if (operationType.get() != OperationType.SELECT)
 			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
-		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
+		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder
+				.get();
 		queryBuilder.innerjoin(target, alias, targetColumn, source, sourceColumn);
 		return this;
 	}
@@ -201,7 +219,8 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 			Class<? extends Entity> source, String sourceColumn) {
 		if (operationType.get() != OperationType.SELECT)
 			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
-		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
+		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder
+				.get();
 		queryBuilder.leftjoin(target, alias, targetColumn, source, sourceColumn);
 		return this;
 	}
@@ -211,7 +230,8 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 			Class<? extends Entity> source, String sourceColumn) {
 		if (operationType.get() != OperationType.SELECT)
 			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
-		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
+		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder
+				.get();
 		queryBuilder.rightjoin(target, alias, targetColumn, source, sourceColumn);
 		return this;
 	}
@@ -221,7 +241,8 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 			Class<? extends Entity> source, String sourceColumn) {
 		if (operationType.get() != OperationType.SELECT)
 			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
-		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
+		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder
+				.get();
 		queryBuilder.fulljoin(target, alias, targetColumn, source, sourceColumn);
 		return this;
 	}
@@ -231,7 +252,8 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 			Class<? extends Entity> source, String sourceColumn) {
 		if (operationType.get() != OperationType.SELECT)
 			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
-		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder;
+		top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder
+				.get();
 		queryBuilder.crossjoin(target, alias, targetColumn, source, sourceColumn);
 		return this;
 	}
@@ -240,16 +262,18 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	public KumaSqlDao insert(String columnName) {
 		if (operationType.get() != OperationType.INSERT)
 			throw new IllegalStateException("当前不是INSERT模式,请调用changeMode进入INSERT模式!");
-		top.starrysea.kql.InsertSqlGenerator.Builder insertBuilder = (top.starrysea.kql.InsertSqlGenerator.Builder) builder;
+		top.starrysea.kql.InsertSqlGenerator.Builder insertBuilder = (top.starrysea.kql.InsertSqlGenerator.Builder) builder
+				.get();
 		insertBuilder.insert(columnName);
 		return this;
 	}
-	
+
 	@Override
 	public KumaSqlDao insert(String columnName, Object value) {
 		if (operationType.get() != OperationType.INSERT)
 			throw new IllegalStateException("当前不是INSERT模式,请调用changeMode进入INSERT模式!");
-		top.starrysea.kql.InsertSqlGenerator.Builder insertBuilder = (top.starrysea.kql.InsertSqlGenerator.Builder) builder;
+		top.starrysea.kql.InsertSqlGenerator.Builder insertBuilder = (top.starrysea.kql.InsertSqlGenerator.Builder) builder
+				.get();
 		insertBuilder.insert(columnName, value);
 		return this;
 	}
@@ -257,15 +281,18 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	@Override
 	public KumaSqlDao table(Class<? extends Entity> table) {
 		if (operationType.get() == OperationType.INSERT) {
-			top.starrysea.kql.InsertSqlGenerator.Builder insertBuilder = (top.starrysea.kql.InsertSqlGenerator.Builder) builder;
+			top.starrysea.kql.InsertSqlGenerator.Builder insertBuilder = (top.starrysea.kql.InsertSqlGenerator.Builder) builder
+					.get();
 			insertBuilder.into(table);
 			return this;
 		} else if (operationType.get() == OperationType.DELETE) {
-			top.starrysea.kql.DeleteSqlGenerator.Builder deleteBuilder = (top.starrysea.kql.DeleteSqlGenerator.Builder) builder;
+			top.starrysea.kql.DeleteSqlGenerator.Builder deleteBuilder = (top.starrysea.kql.DeleteSqlGenerator.Builder) builder
+					.get();
 			deleteBuilder.table(table);
 			return this;
 		} else if (operationType.get() == OperationType.UPDATE) {
-			top.starrysea.kql.UpdateSqlGenerator.Builder updateBuilder = (top.starrysea.kql.UpdateSqlGenerator.Builder) builder;
+			top.starrysea.kql.UpdateSqlGenerator.Builder updateBuilder = (top.starrysea.kql.UpdateSqlGenerator.Builder) builder
+					.get();
 			updateBuilder.table(table);
 			return this;
 		}
@@ -276,7 +303,8 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	public KumaSqlDao update(String columnName, UpdateSetType updateSetType, Object value) {
 		if (operationType.get() != OperationType.UPDATE)
 			throw new IllegalStateException("当前不是UPDATE模式,请调用changeMode进入INSERT模式!");
-		top.starrysea.kql.UpdateSqlGenerator.Builder updateBuilder = (top.starrysea.kql.UpdateSqlGenerator.Builder) builder;
+		top.starrysea.kql.UpdateSqlGenerator.Builder updateBuilder = (top.starrysea.kql.UpdateSqlGenerator.Builder) builder
+				.get();
 		updateBuilder.update(columnName, updateSetType, value);
 		return this;
 	}
@@ -285,8 +313,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	public ListSqlResult endForList(RowMapper<Entity> rowMapper) {
 		if (operationType.get() != OperationType.SELECT)
 			throw new UnsupportedOperationException("endForList方法仅支持SELECT模式,增删改请使用无参数版本的end方法");
-		QuerySqlGenerator querySqlGenerator = (QuerySqlGenerator) builder.build();
-		SqlWithParams sqlWithParams = querySqlGenerator.generate();
+		SqlWithParams sqlWithParams = builder.get().build().generate();
 		List<Entity> result = template.query(sqlWithParams.getSql(), sqlWithParams.getParams(), rowMapper);
 		return new ListSqlResult(result);
 	}
@@ -295,7 +322,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	public IntegerSqlResult endForNumber() {
 		if (operationType.get() != OperationType.SELECT)
 			throw new UnsupportedOperationException("endForNumber方法仅支持SELECT模式,增删改请使用无参数版本的end方法");
-		QuerySqlGenerator querySqlGenerator = (QuerySqlGenerator) builder.build();
+		QuerySqlGenerator querySqlGenerator = (QuerySqlGenerator) builder.get().build();
 		if (querySqlGenerator.getSelectClauses().size() != 1)
 			throw new IllegalArgumentException("只能SELECT一列的数字!如SELECT COUNT(*) FROM...");
 		SqlWithParams sqlWithParams = querySqlGenerator.generate();
@@ -307,8 +334,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	public EntitySqlResult endForObject(RowMapper<Entity> rowMapper) {
 		if (operationType.get() != OperationType.SELECT)
 			throw new UnsupportedOperationException("endForObject方法仅支持SELECT模式,增删改请使用无参数版本的end方法");
-		QuerySqlGenerator querySqlGenerator = (QuerySqlGenerator) builder.build();
-		SqlWithParams sqlWithParams = querySqlGenerator.generate();
+		SqlWithParams sqlWithParams = builder.get().build().generate();
 		Entity result = template.queryForObject(sqlWithParams.getSql(), sqlWithParams.getParams(), rowMapper);
 		return new EntitySqlResult(result);
 	}
@@ -317,7 +343,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	public SqlResult end() {
 		if (operationType.get() == OperationType.SELECT)
 			throw new UnsupportedOperationException("该end方法不支持SELECT模式");
-		SqlWithParams sqlWithParams = builder.build().generate();
+		SqlWithParams sqlWithParams = builder.get().build().generate();
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		template.update(new PreparedStatementCreator() {
 
@@ -339,7 +365,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	public SqlResult batchEnd(BatchPreparedStatementSetter bpss) {
 		if (operationType.get() == OperationType.SELECT)
 			throw new UnsupportedOperationException("该end方法不支持SELECT模式");
-		SqlWithParams sqlWithParams = builder.build().generate();
+		SqlWithParams sqlWithParams = builder.get().build().generate();
 		template.batchUpdate(sqlWithParams.getSql(), bpss);
 		return new SqlResult(true);
 	}
