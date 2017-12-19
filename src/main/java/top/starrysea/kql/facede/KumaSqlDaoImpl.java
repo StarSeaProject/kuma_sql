@@ -6,8 +6,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -32,8 +30,7 @@ import top.starrysea.kql.clause.WhereType;
 import top.starrysea.kql.entity.Entity;
 import top.starrysea.kql.entity.IBuilder;
 
-@Component("kumaSqlDao")
-@Scope("prototype")
+@Component
 public class KumaSqlDaoImpl implements KumaSqlDao {
 
 	@Autowired
