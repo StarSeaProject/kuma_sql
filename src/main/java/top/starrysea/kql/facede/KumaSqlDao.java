@@ -1,6 +1,8 @@
 package top.starrysea.kql.facede;
 
-import org.springframework.jdbc.core.PreparedStatementCreator;
+import java.util.List;
+
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 
 import top.starrysea.kql.clause.OrderByType;
@@ -54,6 +56,8 @@ public interface KumaSqlDao {
 	KumaSqlDao crossjoin(Class<? extends Entity> target, String alias, String targetColumn,
 			Class<? extends Entity> source, String sourceColumn);
 
+	KumaSqlDao insert(String columnName);
+	
 	KumaSqlDao insert(String columnName, Object value);
 
 	KumaSqlDao table(Class<? extends Entity> table);
@@ -68,5 +72,5 @@ public interface KumaSqlDao {
 
 	SqlResult end();
 	
-	SqlResult batchEnd(PreparedStatementCreator ps);
+	SqlResult batchEnd(BatchPreparedStatementSetter bpss);
 }

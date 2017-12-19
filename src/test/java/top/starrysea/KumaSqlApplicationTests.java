@@ -1,9 +1,16 @@
 package top.starrysea;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import top.starrysea.KumaSqlApplication;
@@ -34,10 +41,46 @@ public class KumaSqlApplicationTests {
 	public void insertTest() {
 		kumaSqlDao.changeMode(OperationType.INSERT);
 		Work work = new Work.Builder().workName("a").workUploadTime("2017-08-09").workPdfpath("asdasjdaslkd/asdasd")
-				.workStock(100).build();
+				.workStock(100).workCover("asdasd").workSummary("aaaaaaaaaaaaaa").build();
 		SqlResult result = kumaSqlDao.insert("work_name", work.getWorkName())
 				.insert("work_uploadtime", work.getWorkUploadTime()).insert("work_pdfpath", work.getWorkPdfpath())
-				.insert("work_stock", work.getWorkStock()).table(Work.class).end();
+				.insert("work_stock", work.getWorkStock()).insert("work_cover", work.getWorkCover())
+				.insert("work_summary", work.getWorkSummary()).table(Work.class).end();
+		System.out.println(result.isSuccessed());
+	}
+
+	@Test
+	public void batchInsertTest() {
+		kumaSqlDao.changeMode(OperationType.INSERT);
+		List<Work> works = new ArrayList<>();
+		Work work1 = new Work.Builder().workName("a").workUploadTime("2017-08-09").workPdfpath("asdasjdaslkd/asdasd")
+				.workStock(100).workCover("asdasd").workSummary("aaaaaaaaaaaaaa").build();
+		Work work2 = new Work.Builder().workName("a").workUploadTime("2017-08-09").workPdfpath("asdasjdaslkd/asdasd")
+				.workStock(100).workCover("asdasd").workSummary("aaaaaaaaaaaaaa").build();
+		Work work3 = new Work.Builder().workName("a").workUploadTime("2017-08-09").workPdfpath("asdasjdaslkd/asdasd")
+				.workStock(100).workCover("asdasd").workSummary("aaaaaaaaaaaaaa").build();
+		works.add(work1);
+		works.add(work2);
+		works.add(work3);
+		SqlResult result = kumaSqlDao.insert("work_name").insert("work_uploadtime")
+				.insert("work_pdfpath").insert("work_stock").insert("work_cover")
+				.insert("work_summary").table(Work.class).batchEnd(new BatchPreparedStatementSetter() {
+
+					@Override
+					public void setValues(PreparedStatement ps, int i) throws SQLException {
+						ps.setString(1, works.get(i).getWorkName());
+						ps.setString(2, works.get(i).getWorkUploadTime());
+						ps.setString(3, works.get(i).getWorkPdfpath());
+						ps.setInt(4, works.get(i).getWorkStock());
+						ps.setString(5, works.get(i).getWorkCover());
+						ps.setString(6, works.get(i).getWorkSummary());
+					}
+
+					@Override
+					public int getBatchSize() {
+						return works.size();
+					}
+				});
 		System.out.println(result.isSuccessed());
 	}
 

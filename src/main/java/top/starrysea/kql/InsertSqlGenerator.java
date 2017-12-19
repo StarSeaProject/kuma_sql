@@ -31,6 +31,12 @@ public class InsertSqlGenerator extends NonQuerySqlGenerator {
 			return this;
 		}
 
+		public Builder insert(String columnName) {
+			InsertClause insertClause = InsertClause.of(columnName);
+			insertClauses.add(insertClause);
+			return this;
+		}
+
 		public Builder insert(String columnName, Object value) {
 			InsertClause insertClause = InsertClause.of(columnName, value);
 			insertClauses.add(insertClause);

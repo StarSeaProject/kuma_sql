@@ -1,15 +1,21 @@
 package top.starrysea.kql.facede;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import top.starrysea.kql.DeleteSqlGenerator;
 import top.starrysea.kql.ISqlGenerator;
@@ -34,7 +40,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	private IBuilder<? extends ISqlGenerator> builder;
 
 	private ThreadLocal<OperationType> operationType = new ThreadLocal<>();
-	
+
 	private static final String NOT_SELECT_MODE_INFO = "当前不是SELECT模式,请调用changeMode进入SELECT模式!";
 
 	public KumaSqlDaoImpl() {
@@ -219,7 +225,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 		queryBuilder.fulljoin(target, alias, targetColumn, source, sourceColumn);
 		return this;
 	}
-	
+
 	@Override
 	public KumaSqlDao crossjoin(Class<? extends Entity> target, String alias, String targetColumn,
 			Class<? extends Entity> source, String sourceColumn) {
@@ -230,6 +236,15 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 		return this;
 	}
 
+	@Override
+	public KumaSqlDao insert(String columnName) {
+		if (operationType.get() != OperationType.INSERT)
+			throw new IllegalStateException("当前不是INSERT模式,请调用changeMode进入INSERT模式!");
+		top.starrysea.kql.InsertSqlGenerator.Builder insertBuilder = (top.starrysea.kql.InsertSqlGenerator.Builder) builder;
+		insertBuilder.insert(columnName);
+		return this;
+	}
+	
 	@Override
 	public KumaSqlDao insert(String columnName, Object value) {
 		if (operationType.get() != OperationType.INSERT)
@@ -303,17 +318,30 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 		if (operationType.get() == OperationType.SELECT)
 			throw new UnsupportedOperationException("该end方法不支持SELECT模式");
 		SqlWithParams sqlWithParams = builder.build().generate();
-		template.update(sqlWithParams.getSql(), sqlWithParams.getParams());
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		template.update(new PreparedStatementCreator() {
+
+			@Override
+			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+				PreparedStatement ps = con.prepareStatement(sqlWithParams.getSql(), Statement.RETURN_GENERATED_KEYS);
+				Object[] params = sqlWithParams.getParams();
+				for (int i = 1, len = params.length; i <= len; i++) {
+					ps.setObject(i, params[i]);
+				}
+				return ps;
+			}
+		}, keyHolder);
 		return new SqlResult(true);
 	}
 
 	@Override
-	public SqlResult batchEnd(PreparedStatementCreator ps) {
+	@Transactional
+	public SqlResult batchEnd(BatchPreparedStatementSetter bpss) {
 		if (operationType.get() == OperationType.SELECT)
 			throw new UnsupportedOperationException("该end方法不支持SELECT模式");
-		KeyHolder keyHolder = new GeneratedKeyHolder();
-		template.update(ps, keyHolder);
-		return null;
+		SqlWithParams sqlWithParams = builder.build().generate();
+		template.batchUpdate(sqlWithParams.getSql(), bpss);
+		return new SqlResult(true);
 	}
 
 }

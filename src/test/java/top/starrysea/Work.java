@@ -3,13 +3,16 @@ package top.starrysea;
 import top.starrysea.kql.entity.Entity;
 import top.starrysea.kql.entity.IBuilder;
 
-public class Work implements Entity {
+public class Work implements Entity{
 
 	private Integer workId;
 	private String workName;
 	private String workUploadTime;
 	private String workPdfpath;
 	private Integer workStock;
+	private String workCover;
+	private String workSummary;
+	private Integer workClick;
 
 	private Work(Builder builder) {
 		this.workId = builder.workId;
@@ -17,6 +20,9 @@ public class Work implements Entity {
 		this.workUploadTime = builder.workUploadTime;
 		this.workPdfpath = builder.workPdfpath;
 		this.workStock = builder.workStock;
+		this.workCover = builder.workCover;
+		this.workSummary = builder.workSummary;
+		this.workClick = builder.workClick;
 	}
 
 	public static class Builder implements IBuilder<Work> {
@@ -26,9 +32,9 @@ public class Work implements Entity {
 		private String workUploadTime;
 		private String workPdfpath;
 		private Integer workStock;
-
-		public Builder() {
-		}
+		private String workCover;
+		private String workSummary;
+		private Integer workClick;
 
 		public Builder workId(Integer workId) {
 			this.workId = workId;
@@ -52,6 +58,21 @@ public class Work implements Entity {
 
 		public Builder workStock(Integer workStock) {
 			this.workStock = workStock;
+			return this;
+		}
+
+		public Builder workCover(String workCover) {
+			this.workCover = workCover;
+			return this;
+		}
+
+		public Builder workSummary(String workSummary) {
+			this.workSummary = workSummary;
+			return this;
+		}
+
+		public Builder workClick(Integer workClick) {
+			this.workClick = workClick;
 			return this;
 		}
 
@@ -102,4 +123,27 @@ public class Work implements Entity {
 		this.workStock = workStock;
 	}
 
+	public String getWorkCover() {
+		return workCover;
+	}
+
+	public void setWorkCover(String workCover) {
+		this.workCover = workCover;
+	}
+
+	public String getWorkSummary() {
+		return workSummary;
+	}
+
+	public void setWorkSummary(String workSummary) {
+		this.workSummary = workSummary;
+	}
+
+	public Integer getWorkClick() {
+		return workClick;
+	}
+
+	public void setWorkClick(Integer workClick) {
+		this.workClick = workClick;
+	}
 }
