@@ -310,7 +310,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 		if (operationType.get() != OperationType.SELECT)
 			throw new UnsupportedOperationException("endForList方法仅支持SELECT模式,增删改请使用无参数版本的end方法");
 		SqlWithParams sqlWithParams = builder.get().build().generate();
-		List<Entity> result = template.query(sqlWithParams.getSql(), sqlWithParams.getParams(), rowMapper);
+		List<? extends Entity> result = template.query(sqlWithParams.getSql(), sqlWithParams.getParams(), rowMapper);
 		return new ListSqlResult(result);
 	}
 
@@ -336,7 +336,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	}
 
 	@Override
-	public SqlResult end() {
+	public UpdateSqlResult end() {
 		if (operationType.get() == OperationType.SELECT)
 			throw new UnsupportedOperationException("该end方法不支持SELECT模式");
 		SqlWithParams sqlWithParams = builder.get().build().generate();
@@ -348,12 +348,12 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 				PreparedStatement ps = con.prepareStatement(sqlWithParams.getSql(), Statement.RETURN_GENERATED_KEYS);
 				Object[] params = sqlWithParams.getParams();
 				for (int i = 1, len = params.length; i <= len; i++) {
-					ps.setObject(i, params[i]);
+					ps.setObject(i, params[i - 1]);
 				}
 				return ps;
 			}
 		}, keyHolder);
-		return new SqlResult(true);
+		return new UpdateSqlResult(keyHolder);
 	}
 
 	@Override

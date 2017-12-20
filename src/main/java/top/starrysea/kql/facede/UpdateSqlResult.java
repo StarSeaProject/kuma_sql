@@ -1,19 +1,22 @@
 package top.starrysea.kql.facede;
 
+import org.springframework.jdbc.support.KeyHolder;
+
 public class UpdateSqlResult extends SqlResult {
 
-	private Object pk;
+	private KeyHolder keyHolder;
 
-	public UpdateSqlResult(Object pk) {
+	public UpdateSqlResult(KeyHolder keyHolder) {
 		super(true);
-		this.pk = pk;
+		this.keyHolder = keyHolder;
 	}
 
-	public Object getPk() {
-		return pk;
+	public KeyHolder getKeyHolder() {
+		return keyHolder;
 	}
 
-	public void setPk(Object pk) {
-		this.pk = pk;
+	public void setKeyHolder(KeyHolder keyHolder) {
+		this.keyHolder = keyHolder;
 	}
+
 }

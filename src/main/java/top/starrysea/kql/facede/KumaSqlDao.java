@@ -68,7 +68,7 @@ public interface KumaSqlDao {
 
 	EntitySqlResult endForObject(RowMapper<Entity> rowMapper);
 
-	SqlResult end();
+	UpdateSqlResult end();
 	
 	SqlResult batchEnd(BatchPreparedStatementSetter bpss);
 }
