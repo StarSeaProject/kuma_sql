@@ -10,7 +10,7 @@ public class Common {
 	// 私有构造器防止外部创建新的Util对象
 	private Common() {
 	}
-	
+
 	public static boolean isNotNull(Object object) {
 		boolean result = false;
 		if (object == null)
@@ -25,6 +25,12 @@ public class Common {
 			result = true;
 		} else if (object instanceof Integer) {
 			int i = (int) object;
+			if (i == 0)
+				result = false;
+			else
+				result = true;
+		} else if (object instanceof Short) {
+			short i = (short) object;
 			if (i == 0)
 				result = false;
 			else

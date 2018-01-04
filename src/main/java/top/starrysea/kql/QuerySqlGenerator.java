@@ -245,13 +245,13 @@ public class QuerySqlGenerator implements ISqlGenerator {
 		GeneratorChain generatorChain = new GeneratorChain(this);
 		generatorChain.addGenerator(SelectGenerator.class);
 		generatorChain.addGenerator(TableGenerator.class);
+		if (!joinClauses.isEmpty())
+			generatorChain.addGenerator(JoinGenerator.class);
 		generatorChain.addGenerator(WhereGenerator.class);
 		if (!orderByClauses.isEmpty())
 			generatorChain.addGenerator(OrderByGenerator.class);
 		if (limitClause != null)
 			generatorChain.addGenerator(LimitGenerator.class);
-		if (!joinClauses.isEmpty())
-			generatorChain.addGenerator(JoinGenerator.class);
 		return generatorChain.startGenerator();
 	}
 }

@@ -63,6 +63,8 @@ public interface KumaSqlDao {
 	KumaSqlDao update(String columnName, UpdateSetType updateSetType, Object value);
 
 	ListSqlResult endForList(RowMapper<Entity> rowMapper);
+	
+	ListSqlResult endForList(Class<?> clazz);
 
 	IntegerSqlResult endForNumber();
 

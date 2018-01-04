@@ -320,6 +320,17 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 		List<? extends Entity> result = template.query(sqlWithParams.getSql(), sqlWithParams.getParams(), rowMapper);
 		return new ListSqlResult(result);
 	}
+	
+	@Override
+	public ListSqlResult endForList(Class<?> clazz) {
+		if (operationType.get() != OperationType.SELECT)
+			throw new UnsupportedOperationException("endForList方法仅支持SELECT模式,增删改请使用无参数版本的end方法");
+		SqlWithParams sqlWithParams = builder.get().build().generate();
+		logger.info("生成的sql为:{}", sqlWithParams.getSql());
+		logger.info("sql的参数为{}", Arrays.toString(sqlWithParams.getParams()));
+		List<?> result=template.queryForList(sqlWithParams.getSql(), sqlWithParams.getParams(), clazz);
+		return new ListSqlResult(result);
+	}
 
 	@Override
 	public IntegerSqlResult endForNumber() {
