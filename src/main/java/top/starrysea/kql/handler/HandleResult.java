@@ -4,16 +4,15 @@ import java.util.List;
 
 public class HandleResult {
 
-	private StringBuilder buffer;
+	private String buffer;
 	private List<Object> preParams;
 
-	public HandleResult(StringBuilder whereBuffer, List<Object> preParams) {
-		super();
-		this.buffer = whereBuffer;
+	public HandleResult(String where, List<Object> preParams) {
+		this.buffer = where;
 		this.preParams = preParams;
 	}
 
-	public StringBuilder getBuffer() {
+	public String getBuffer() {
 		return buffer;
 	}
 

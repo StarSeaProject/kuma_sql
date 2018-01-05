@@ -6,5 +6,5 @@ import top.starrysea.kql.clause.UpdateSetClause;
 
 public interface IUpdateSetHandler {
 
-	HandleResult handleUpdateBuffer(UpdateSetClause updateSetClause, StringBuilder updateBuilder, List<Object> params);
+	HandleResult handleUpdateBuffer(UpdateSetClause updateSetClause, List<Object> params);
 }

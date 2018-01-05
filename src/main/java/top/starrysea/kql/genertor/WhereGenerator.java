@@ -3,7 +3,6 @@ package top.starrysea.kql.genertor;
 import static top.starrysea.kql.common.Common.isNotNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import top.starrysea.kql.ISqlGenerator;
@@ -23,20 +22,20 @@ public class WhereGenerator extends Generator {
 	public SqlWithParams generate(SqlWithParams sqlWithParams) {
 		StringBuilder sqlBuffer = new StringBuilder(sqlWithParams.getSql());
 		List<WhereClause> whereClauses = sqlGenerator.getWhereClauses();
-		Collections.reverse(whereClauses);
 		StringBuilder whereBuffer = new StringBuilder();
 		List<Object> params = new ArrayList<>();
-		whereBuffer.append("WHERE 1=1 ");
+		whereBuffer.append("WHERE ");
 
+		List<String> whereClauseString = new ArrayList<>();
 		for (WhereClause where : whereClauses) {
 			if (isNotNull(where.getValue())) {
 				IWhereHandler handler = QuerySqlGenerator.getHandlerMap().get(where.getWhereType());
-				HandleResult result = handler.handleWhereBuffer(where, whereBuffer, params);
-				whereBuffer = result.getBuffer();
+				HandleResult result = handler.handleWhereBuffer(where, params);
+				whereClauseString.add(result.getBuffer());
 				params = result.getPreParams();
 			}
 		}
-		Collections.reverse(params);
+		whereBuffer.append(String.join(" AND ", whereClauseString.toArray(new String[0]))).append(" ");
 
 		if (getNextGenerator() != null) {
 			return getNextGenerator()
@@ -45,5 +44,4 @@ public class WhereGenerator extends Generator {
 			return new SqlWithParams(sqlBuffer.append(whereBuffer).toString(), params.toArray());
 		}
 	}
-
 }

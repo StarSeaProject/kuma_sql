@@ -7,5 +7,5 @@ import top.starrysea.kql.clause.WhereClause;
 @FunctionalInterface
 public interface IWhereHandler {
 
-	HandleResult handleWhereBuffer(WhereClause where, StringBuilder whereBuffer, List<Object> preParams);
+	HandleResult handleWhereBuffer(WhereClause where, List<Object> preParams);
 }

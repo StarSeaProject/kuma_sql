@@ -1,56 +1,55 @@
 package top.starrysea.kql.handler;
 
 public class WhereHandlers {
-	
-	private WhereHandlers() {}
-	
-	private static final String WHERE = "WHERE";
-	
-	public static final IWhereHandler equalsHandler = (where, whereBuilder, params) -> {
-		whereBuilder.insert(whereBuilder.indexOf(WHERE) + 5, " " + where.getColumnName() + " = ? AND");
+
+	private WhereHandlers() {
+	}
+
+	public static final IWhereHandler equalsHandler = (where, params) -> {
+		String whereClause = where.getColumnName() + " = ?";
 		params.add(where.getValue());
-		return new HandleResult(whereBuilder, params);
+		return new HandleResult(whereClause, params);
 	};
 
-	public static final IWhereHandler frontFuzzyHandler = (where, whereBuilder, params) -> {
-		whereBuilder.insert(whereBuilder.indexOf(WHERE) + 5, " " + where.getColumnName() + " LIKE ? AND");
+	public static final IWhereHandler frontFuzzyHandler = (where, params) -> {
+		String whereClause = where.getColumnName() + " LIKE ?";
 		params.add("%" + where.getValue());
-		return new HandleResult(whereBuilder, params);
+		return new HandleResult(whereClause, params);
 	};
 
-	public static final IWhereHandler backFuzzyHandler = (where, whereBuilder, params) -> {
-		whereBuilder.insert(whereBuilder.indexOf(WHERE) + 5, " " + where.getColumnName() + " LIKE ? AND");
+	public static final IWhereHandler backFuzzyHandler = (where, params) -> {
+		String whereClause = where.getColumnName() + " LIKE ?";
 		params.add(where.getValue() + "%");
-		return new HandleResult(whereBuilder, params);
+		return new HandleResult(whereClause, params);
 	};
 
-	public static final IWhereHandler fuzzyHandler = (where, whereBuilder, params) -> {
-		whereBuilder.insert(whereBuilder.indexOf(WHERE) + 5, " " + where.getColumnName() + " LIKE ? AND");
+	public static final IWhereHandler fuzzyHandler = (where, params) -> {
+		String whereClause = where.getColumnName() + " LIKE ?";
 		params.add("%" + where.getValue() + "%");
-		return new HandleResult(whereBuilder, params);
+		return new HandleResult(whereClause, params);
 	};
 
-	public static final IWhereHandler greaterHandler = (where, whereBuilder, params) -> {
-		whereBuilder.insert(whereBuilder.indexOf(WHERE) + 5, " " + where.getColumnName() + " > ? AND");
+	public static final IWhereHandler greaterHandler = (where, params) -> {
+		String whereClause = where.getColumnName() + " > ?";
 		params.add("%" + where.getValue() + "%");
-		return new HandleResult(whereBuilder, params);
+		return new HandleResult(whereClause, params);
 	};
 
-	public static final IWhereHandler greaterEqualHandler = (where, whereBuilder, params) -> {
-		whereBuilder.insert(whereBuilder.indexOf(WHERE) + 5, " " + where.getColumnName() + " >= ? AND");
+	public static final IWhereHandler greaterEqualHandler = (where, params) -> {
+		String whereClause = where.getColumnName() + " >= ?";
 		params.add("%" + where.getValue() + "%");
-		return new HandleResult(whereBuilder, params);
+		return new HandleResult(whereClause, params);
 	};
 
-	public static final IWhereHandler lessHandler = (where, whereBuilder, params) -> {
-		whereBuilder.insert(whereBuilder.indexOf(WHERE) + 5, " " + where.getColumnName() + " < ? AND");
+	public static final IWhereHandler lessHandler = (where, params) -> {
+		String whereClause = where.getColumnName() + " < ?";
 		params.add("%" + where.getValue() + "%");
-		return new HandleResult(whereBuilder, params);
+		return new HandleResult(whereClause, params);
 	};
 
-	public static final IWhereHandler lessEqualHandler = (where, whereBuilder, params) -> {
-		whereBuilder.insert(whereBuilder.indexOf(WHERE) + 5, " " + where.getColumnName() + " <= ? AND");
+	public static final IWhereHandler lessEqualHandler = (where, params) -> {
+		String whereClause = where.getColumnName() + " <= ?";
 		params.add("%" + where.getValue() + "%");
-		return new HandleResult(whereBuilder, params);
+		return new HandleResult(whereClause, params);
 	};
 }

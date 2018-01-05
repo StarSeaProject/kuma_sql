@@ -247,7 +247,8 @@ public class QuerySqlGenerator implements ISqlGenerator {
 		generatorChain.addGenerator(TableGenerator.class);
 		if (!joinClauses.isEmpty())
 			generatorChain.addGenerator(JoinGenerator.class);
-		generatorChain.addGenerator(WhereGenerator.class);
+		if (!whereClauses.isEmpty())
+			generatorChain.addGenerator(WhereGenerator.class);
 		if (!orderByClauses.isEmpty())
 			generatorChain.addGenerator(OrderByGenerator.class);
 		if (limitClause != null)

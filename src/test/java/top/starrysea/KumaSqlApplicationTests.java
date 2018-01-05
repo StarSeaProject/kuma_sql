@@ -31,7 +31,8 @@ public class KumaSqlApplicationTests {
 	public void selectTest() {
 		Work work = new Work.Builder().workName("a").build();
 		ListSqlResult result = (ListSqlResult) kumaSqlDao.select("work_id").select("work_name").from(Work.class)
-				.where("work_name", WhereType.FUZZY, work.getWorkName()).orderBy("work_uploadtime").limit(0, 10)
+				.where("work_name", WhereType.FUZZY, work.getWorkName()).where("work_id", WhereType.EQUALS, 1)
+				.orderBy("work_uploadtime").limit(0, 10)
 				.endForList((rs, row) -> new Work.Builder().workId(rs.getInt("work_id")).workName("work_name").build());
 		System.out.println(result.getResult());
 	}
@@ -61,9 +62,9 @@ public class KumaSqlApplicationTests {
 		works.add(work1);
 		works.add(work2);
 		works.add(work3);
-		SqlResult result = kumaSqlDao.insert("work_name").insert("work_uploadtime")
-				.insert("work_pdfpath").insert("work_stock").insert("work_cover")
-				.insert("work_summary").table(Work.class).batchEnd(new BatchPreparedStatementSetter() {
+		SqlResult result = kumaSqlDao.insert("work_name").insert("work_uploadtime").insert("work_pdfpath")
+				.insert("work_stock").insert("work_cover").insert("work_summary").table(Work.class)
+				.batchEnd(new BatchPreparedStatementSetter() {
 
 					@Override
 					public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -88,7 +89,9 @@ public class KumaSqlApplicationTests {
 		kumaSqlDao.changeMode(OperationType.UPDATE);
 		Work work = new Work.Builder().workId(6).workStock(1).build();
 		SqlResult result = kumaSqlDao.update("work_stock", UpdateSetType.REDUCE, work.getWorkStock())
-				.where("work_id", WhereType.EQUALS, work.getWorkId()).table(Work.class).end();
+				.update("work_pdfpath", UpdateSetType.ASSIGN, "/qwe")
+				.where("work_id", WhereType.EQUALS, work.getWorkId()).where("work_name", WhereType.FUZZY, "aa")
+				.table(Work.class).end();
 		System.out.println(result.isSuccessed());
 	}
 
@@ -96,7 +99,8 @@ public class KumaSqlApplicationTests {
 	public void deleteTest() {
 		kumaSqlDao.changeMode(OperationType.DELETE);
 		Work work = new Work.Builder().workId(7).build();
-		SqlResult result = kumaSqlDao.table(Work.class).where("work_id", WhereType.EQUALS, work.getWorkId()).end();
+		SqlResult result = kumaSqlDao.table(Work.class).where("work_name", WhereType.EQUALS, "aa")
+				.where("work_id", WhereType.EQUALS, work.getWorkId()).end();
 		System.out.println(result.isSuccessed());
 	}
 }
