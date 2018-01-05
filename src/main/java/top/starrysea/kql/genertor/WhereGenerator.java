@@ -3,6 +3,7 @@ package top.starrysea.kql.genertor;
 import static top.starrysea.kql.common.Common.isNotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import top.starrysea.kql.ISqlGenerator;
@@ -22,6 +23,7 @@ public class WhereGenerator extends Generator {
 	public SqlWithParams generate(SqlWithParams sqlWithParams) {
 		StringBuilder sqlBuffer = new StringBuilder(sqlWithParams.getSql());
 		List<WhereClause> whereClauses = sqlGenerator.getWhereClauses();
+		Collections.reverse(whereClauses);
 		StringBuilder whereBuffer = new StringBuilder();
 		List<Object> params = new ArrayList<>();
 		whereBuffer.append("WHERE 1=1 ");
@@ -34,6 +36,7 @@ public class WhereGenerator extends Generator {
 				params = result.getPreParams();
 			}
 		}
+		Collections.reverse(params);
 
 		if (getNextGenerator() != null) {
 			return getNextGenerator()
