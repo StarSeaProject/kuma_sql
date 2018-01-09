@@ -51,22 +51,32 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 		builder.set(new QuerySqlGenerator.Builder());
 	}
 
-	public void changeMode(OperationType operationType) {
-		this.operationType.set(operationType);
-		switch (operationType) {
-		case INSERT:
-			builder.set(new InsertSqlGenerator.Builder());
-			break;
-		case DELETE:
-			builder.set(new DeleteSqlGenerator.Builder());
-			break;
-		case SELECT:
-			builder.set(new QuerySqlGenerator.Builder());
-			break;
-		case UPDATE:
-			builder.set(new UpdateSqlGenerator.Builder());
-			break;
-		}
+	@Override
+	public KumaSqlDao selectMode() {
+		this.operationType.set(OperationType.SELECT);
+		builder.set(new QuerySqlGenerator.Builder());
+		return this;
+	}
+
+	@Override
+	public KumaSqlDao insertMode() {
+		this.operationType.set(OperationType.INSERT);
+		builder.set(new InsertSqlGenerator.Builder());
+		return this;
+	}
+
+	@Override
+	public KumaSqlDao updateMode() {
+		this.operationType.set(OperationType.UPDATE);
+		builder.set(new UpdateSqlGenerator.Builder());
+		return this;
+	}
+
+	@Override
+	public KumaSqlDao deleteMode() {
+		this.operationType.set(OperationType.DELETE);
+		builder.set(new DeleteSqlGenerator.Builder());
+		return this;
 	}
 
 	public KumaSqlDao select(SelectClause selectClause) {

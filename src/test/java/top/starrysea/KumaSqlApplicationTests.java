@@ -39,7 +39,7 @@ public class KumaSqlApplicationTests {
 
 	@Test
 	public void insertTest() {
-		kumaSqlDao.changeMode(OperationType.INSERT);
+		kumaSqlDao.insertMode();
 		Work work = new Work.Builder().workName("a").workUploadTime("2017-08-09").workPdfpath("asdasjdaslkd/asdasd")
 				.workStock(100).workCover("asdasd").workSummary("aaaaaaaaaaaaaa").build();
 		SqlResult result = kumaSqlDao.insert("work_name", work.getWorkName())
@@ -51,7 +51,7 @@ public class KumaSqlApplicationTests {
 
 	@Test
 	public void batchInsertTest() {
-		kumaSqlDao.changeMode(OperationType.INSERT);
+		kumaSqlDao.insertMode();
 		List<Work> works = new ArrayList<>();
 		Work work1 = new Work.Builder().workName("a").workUploadTime("2017-08-09").workPdfpath("asdasjdaslkd/asdasd")
 				.workStock(100).workCover("asdasd").workSummary("aaaaaaaaaaaaaa").build();
@@ -86,7 +86,7 @@ public class KumaSqlApplicationTests {
 
 	@Test
 	public void updateTest() {
-		kumaSqlDao.changeMode(OperationType.UPDATE);
+		kumaSqlDao.updateMode();
 		Work work = new Work.Builder().workId(6).workStock(1).build();
 		SqlResult result = kumaSqlDao.update("work_stock", UpdateSetType.REDUCE, work.getWorkStock())
 				.update("work_pdfpath", UpdateSetType.ASSIGN, "/qwe")
@@ -97,7 +97,7 @@ public class KumaSqlApplicationTests {
 
 	@Test
 	public void deleteTest() {
-		kumaSqlDao.changeMode(OperationType.DELETE);
+		kumaSqlDao.deleteMode();
 		Work work = new Work.Builder().workId(7).build();
 		SqlResult result = kumaSqlDao.table(Work.class).where("work_name", WhereType.EQUALS, "aa")
 				.where("work_id", WhereType.EQUALS, work.getWorkId()).end();

@@ -10,8 +10,14 @@ import top.starrysea.kql.clause.WhereType;
 import top.starrysea.kql.entity.Entity;
 
 public interface KumaSqlDao {
-
-	void changeMode(OperationType operationType);
+	
+	KumaSqlDao selectMode();
+	
+	KumaSqlDao insertMode();
+	
+	KumaSqlDao updateMode();
+	
+	KumaSqlDao deleteMode();
 
 	KumaSqlDao select(SelectClause selectClause);
 
