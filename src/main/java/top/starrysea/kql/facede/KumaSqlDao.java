@@ -10,13 +10,13 @@ import top.starrysea.kql.clause.WhereType;
 import top.starrysea.kql.entity.Entity;
 
 public interface KumaSqlDao {
-	
+
 	KumaSqlDao selectMode();
-	
+
 	KumaSqlDao insertMode();
-	
+
 	KumaSqlDao updateMode();
-	
+
 	KumaSqlDao deleteMode();
 
 	KumaSqlDao select(SelectClause selectClause);
@@ -56,20 +56,22 @@ public interface KumaSqlDao {
 
 	KumaSqlDao fulljoin(Class<? extends Entity> target, String alias, String targetColumn,
 			Class<? extends Entity> source, String sourceColumn);
-	
+
 	KumaSqlDao crossjoin(Class<? extends Entity> target, String alias, String targetColumn,
 			Class<? extends Entity> source, String sourceColumn);
 
 	KumaSqlDao insert(String columnName);
-	
+
 	KumaSqlDao insert(String columnName, Object value);
 
 	KumaSqlDao table(Class<? extends Entity> table);
 
+	KumaSqlDao update(String columnName, UpdateSetType updateSetType);
+
 	KumaSqlDao update(String columnName, UpdateSetType updateSetType, Object value);
 
 	ListSqlResult endForList(RowMapper<Entity> rowMapper);
-	
+
 	ListSqlResult endForList(Class<?> clazz);
 
 	IntegerSqlResult endForNumber();
@@ -77,6 +79,6 @@ public interface KumaSqlDao {
 	EntitySqlResult endForObject(RowMapper<Entity> rowMapper);
 
 	UpdateSqlResult end();
-	
+
 	SqlResult batchEnd(BatchPreparedStatementSetter bpss);
 }

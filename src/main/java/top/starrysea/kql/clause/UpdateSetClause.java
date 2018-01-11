@@ -6,6 +6,13 @@ public class UpdateSetClause {
 	private UpdateSetType updateSetType;
 	private Object value;
 
+	public static UpdateSetClause of(String columnName, UpdateSetType updateSetType) {
+		UpdateSetClause updateSetClause = new UpdateSetClause();
+		updateSetClause.setColumnName(columnName);
+		updateSetClause.setUpdateSetType(updateSetType);
+		return updateSetClause;
+	}
+
 	public static UpdateSetClause of(String columnName, UpdateSetType updateSetType, Object value) {
 		UpdateSetClause updateSetClause = new UpdateSetClause();
 		updateSetClause.setColumnName(columnName);

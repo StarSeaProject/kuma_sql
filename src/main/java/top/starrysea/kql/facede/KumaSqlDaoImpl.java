@@ -272,7 +272,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	@Override
 	public KumaSqlDao insert(String columnName) {
 		if (operationType.get() != OperationType.INSERT)
-			throw new IllegalStateException("当前不是INSERT模式,请调用changeMode进入INSERT模式!");
+			throw new IllegalStateException("当前不是INSERT模式,请调用insertMode()进入INSERT模式!");
 		top.starrysea.kql.InsertSqlGenerator.Builder insertBuilder = (top.starrysea.kql.InsertSqlGenerator.Builder) builder
 				.get();
 		insertBuilder.insert(columnName);
@@ -282,7 +282,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	@Override
 	public KumaSqlDao insert(String columnName, Object value) {
 		if (operationType.get() != OperationType.INSERT)
-			throw new IllegalStateException("当前不是INSERT模式,请调用changeMode进入INSERT模式!");
+			throw new IllegalStateException("当前不是INSERT模式,请调用insertMode()进入INSERT模式!");
 		top.starrysea.kql.InsertSqlGenerator.Builder insertBuilder = (top.starrysea.kql.InsertSqlGenerator.Builder) builder
 				.get();
 		insertBuilder.insert(columnName, value);
@@ -311,9 +311,19 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 	}
 
 	@Override
+	public KumaSqlDao update(String columnName, UpdateSetType updateSetType) {
+		if (operationType.get() != OperationType.UPDATE)
+			throw new IllegalStateException("当前不是UPDATE模式,请调用updateMode()进入UPDATE模式!");
+		top.starrysea.kql.UpdateSqlGenerator.Builder updateBuilder = (top.starrysea.kql.UpdateSqlGenerator.Builder) builder
+				.get();
+		updateBuilder.update(columnName, updateSetType);
+		return this;
+	}
+
+	@Override
 	public KumaSqlDao update(String columnName, UpdateSetType updateSetType, Object value) {
 		if (operationType.get() != OperationType.UPDATE)
-			throw new IllegalStateException("当前不是UPDATE模式,请调用changeMode进入INSERT模式!");
+			throw new IllegalStateException("当前不是UPDATE模式,请调用updateMode()进入UPDATE模式!");
 		top.starrysea.kql.UpdateSqlGenerator.Builder updateBuilder = (top.starrysea.kql.UpdateSqlGenerator.Builder) builder
 				.get();
 		updateBuilder.update(columnName, updateSetType, value);
@@ -328,9 +338,10 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 		logger.info("生成的sql为:{}", sqlWithParams.getSql());
 		logger.info("sql的参数为{}", Arrays.toString(sqlWithParams.getParams()));
 		List<? extends Entity> result = template.query(sqlWithParams.getSql(), sqlWithParams.getParams(), rowMapper);
+		resetBuilder();
 		return new ListSqlResult(result);
 	}
-	
+
 	@Override
 	public ListSqlResult endForList(Class<?> clazz) {
 		if (operationType.get() != OperationType.SELECT)
@@ -338,7 +349,8 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 		SqlWithParams sqlWithParams = builder.get().build().generate();
 		logger.info("生成的sql为:{}", sqlWithParams.getSql());
 		logger.info("sql的参数为{}", Arrays.toString(sqlWithParams.getParams()));
-		List<?> result=template.queryForList(sqlWithParams.getSql(), sqlWithParams.getParams(), clazz);
+		List<?> result = template.queryForList(sqlWithParams.getSql(), sqlWithParams.getParams(), clazz);
+		resetBuilder();
 		return new ListSqlResult(result);
 	}
 
@@ -353,6 +365,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 		logger.info("生成的sql为:{}", sqlWithParams.getSql());
 		logger.info("sql的参数为{}", Arrays.toString(sqlWithParams.getParams()));
 		Integer result = template.queryForObject(sqlWithParams.getSql(), sqlWithParams.getParams(), Integer.class);
+		resetBuilder();
 		return new IntegerSqlResult(result);
 	}
 
@@ -364,6 +377,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 		logger.info("生成的sql为:{}", sqlWithParams.getSql());
 		logger.info("sql的参数为{}", Arrays.toString(sqlWithParams.getParams()));
 		Entity result = template.queryForObject(sqlWithParams.getSql(), sqlWithParams.getParams(), rowMapper);
+		resetBuilder();
 		return new EntitySqlResult(result);
 	}
 
@@ -387,6 +401,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 				return ps;
 			}
 		}, keyHolder);
+		resetBuilder();
 		return new UpdateSqlResult(keyHolder);
 	}
 
@@ -399,7 +414,24 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 		logger.info("生成的sql为:{}", sqlWithParams.getSql());
 		logger.info("sql的参数为{}", Arrays.toString(sqlWithParams.getParams()));
 		template.batchUpdate(sqlWithParams.getSql(), bpss);
+		resetBuilder();
 		return new SqlResult(true);
 	}
 
+	private void resetBuilder() {
+		switch (operationType.get()) {
+		case INSERT:
+			builder.set(new InsertSqlGenerator.Builder());
+			break;
+		case DELETE:
+			builder.set(new DeleteSqlGenerator.Builder());
+			break;
+		case SELECT:
+			builder.set(new QuerySqlGenerator.Builder());
+			break;
+		case UPDATE:
+			builder.set(new UpdateSqlGenerator.Builder());
+			break;
+		}
+	}
 }

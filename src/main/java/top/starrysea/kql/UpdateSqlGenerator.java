@@ -60,7 +60,13 @@ public class UpdateSqlGenerator extends NonQuerySqlGenerator {
 			this.table = table;
 			return this;
 		}
-
+		
+		public Builder update(String columnName, UpdateSetType updateSetType) {
+			UpdateSetClause updateSetClause = UpdateSetClause.of(columnName, updateSetType);
+			updateSetClauses.add(updateSetClause);
+			return this;
+		}
+		
 		public Builder update(String columnName, UpdateSetType updateSetType, Object value) {
 			UpdateSetClause updateSetClause = UpdateSetClause.of(columnName, updateSetType, value);
 			updateSetClauses.add(updateSetClause);
