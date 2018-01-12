@@ -1,21 +1,19 @@
 package top.starrysea.kql.facede;
 
-import top.starrysea.kql.entity.Entity;
+public class EntitySqlResult<T> extends SqlResult {
 
-public class EntitySqlResult extends SqlResult {
+	private T result;
 
-	private Entity result;
-
-	public EntitySqlResult(Entity result) {
+	public EntitySqlResult(T result) {
 		super(true);
 		this.result = result;
 	}
 
-	public Entity getResult() {
+	public T getResult() {
 		return result;
 	}
 
-	public void setResult(Entity result) {
+	public void setResult(T result) {
 		this.result = result;
 	}
 

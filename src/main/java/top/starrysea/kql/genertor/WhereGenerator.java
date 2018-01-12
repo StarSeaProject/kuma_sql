@@ -24,7 +24,6 @@ public class WhereGenerator extends Generator {
 		List<WhereClause> whereClauses = sqlGenerator.getWhereClauses();
 		StringBuilder whereBuffer = new StringBuilder();
 		List<Object> params = new ArrayList<>();
-		whereBuffer.append("WHERE ");
 
 		List<String> whereClauseString = new ArrayList<>();
 		for (WhereClause where : whereClauses) {
@@ -35,7 +34,10 @@ public class WhereGenerator extends Generator {
 				params = result.getPreParams();
 			}
 		}
-		whereBuffer.append(String.join(" AND ", whereClauseString.toArray(new String[0]))).append(" ");
+		if (!whereClauseString.isEmpty()) {
+			whereBuffer.append("WHERE ");
+			whereBuffer.append(String.join(" AND ", whereClauseString.toArray(new String[0]))).append(" ");
+		}
 
 		if (getNextGenerator() != null) {
 			return getNextGenerator()
