@@ -30,6 +30,7 @@ public class DeleteSqlGenerator extends NonQuerySqlGenerator {
 		handlerMap.put(WhereType.GREATER_EQUAL, WhereHandlers.greaterEqualHandler);
 		handlerMap.put(WhereType.LESS, WhereHandlers.lessHandler);
 		handlerMap.put(WhereType.LESS_EQUAL, WhereHandlers.lessEqualHandler);
+		handlerMap.put(WhereType.IN, WhereHandlers.inHandler);
 	}
 
 	private DeleteSqlGenerator(Builder builder) {
@@ -53,6 +54,12 @@ public class DeleteSqlGenerator extends NonQuerySqlGenerator {
 
 		public Builder where(String columnName, WhereType whereType, Object value) {
 			WhereClause updateWhereClause = WhereClause.of(columnName, whereType, value);
+			whereClauses.add(updateWhereClause);
+			return this;
+		}
+		
+		public Builder where(String columnName, WhereType whereType, List<Object> valueList) {
+			WhereClause updateWhereClause = WhereClause.of(columnName, whereType, valueList);
 			whereClauses.add(updateWhereClause);
 			return this;
 		}

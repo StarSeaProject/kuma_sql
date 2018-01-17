@@ -1,6 +1,9 @@
 package top.starrysea.kql.facede;
 
+import java.util.List;
+
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 import top.starrysea.kql.clause.OrderByType;
@@ -30,6 +33,8 @@ public interface KumaSqlDao {
 	KumaSqlDao from(Class<? extends Entity> table, String alias);
 
 	KumaSqlDao where(String columnName, WhereType whereType, Object value);
+	
+	KumaSqlDao where(String columnName, WhereType whereType, List<Object> value);
 
 	KumaSqlDao where(String columnName, String alias, WhereType whereType, Object value);
 
@@ -81,4 +86,6 @@ public interface KumaSqlDao {
 	UpdateSqlResult end();
 
 	SqlResult batchEnd(BatchPreparedStatementSetter bpss);
+	
+	JdbcTemplate getTemplate();
 }

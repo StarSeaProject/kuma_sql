@@ -44,6 +44,7 @@ public class QuerySqlGenerator implements ISqlGenerator {
 		handlerMap.put(WhereType.FRONT_FUZZY, WhereHandlers.frontFuzzyHandler);
 		handlerMap.put(WhereType.BACK_FUZZY, WhereHandlers.backFuzzyHandler);
 		handlerMap.put(WhereType.FUZZY, WhereHandlers.fuzzyHandler);
+		handlerMap.put(WhereType.IN, WhereHandlers.inHandler);
 	}
 
 	private QuerySqlGenerator(Builder builder) {
@@ -111,6 +112,12 @@ public class QuerySqlGenerator implements ISqlGenerator {
 
 		public Builder where(String colunmName, WhereType whereType, Object value) {
 			WhereClause whereClause = WhereClause.of(colunmName, whereType, value);
+			this.whereClauses.add(whereClause);
+			return this;
+		}
+
+		public Builder where(String colunmName, WhereType whereType, List<Object> valueList) {
+			WhereClause whereClause = WhereClause.of(colunmName, whereType, valueList);
 			this.whereClauses.add(whereClause);
 			return this;
 		}

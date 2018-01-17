@@ -1,10 +1,13 @@
 package top.starrysea.kql.clause;
 
+import java.util.List;
+
 public class WhereClause {
 
 	private String columnName;
 	private WhereType whereType;
 	private Object value;
+	private List<Object> valueList;
 
 	private WhereClause() {
 	}
@@ -13,7 +16,17 @@ public class WhereClause {
 		WhereClause whereClause = new WhereClause();
 		whereClause.setColumnName(columnName);
 		whereClause.setWhereType(whereType);
+		if (whereType == WhereType.IN)
+			throw new IllegalArgumentException("该方法不支持IN类型的where子句,请使用of(String,WhereType,List<Object>)的版本");
 		whereClause.setValue(value);
+		return whereClause;
+	}
+
+	public static WhereClause of(String columnName, WhereType whereType, List<Object> valueList) {
+		WhereClause whereClause = new WhereClause();
+		whereClause.setColumnName(columnName);
+		whereClause.setWhereType(whereType);
+		whereClause.setValueList(valueList);
 		return whereClause;
 	}
 
@@ -47,6 +60,14 @@ public class WhereClause {
 
 	private void setValue(Object value) {
 		this.value = value;
+	}
+
+	public List<Object> getValueList() {
+		return valueList;
+	}
+
+	private void setValueList(List<Object> valueList) {
+		this.valueList = valueList;
 	}
 
 }

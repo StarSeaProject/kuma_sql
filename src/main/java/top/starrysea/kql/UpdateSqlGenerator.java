@@ -33,6 +33,7 @@ public class UpdateSqlGenerator extends NonQuerySqlGenerator {
 		whereHandlerMap.put(WhereType.GREATER_EQUAL, WhereHandlers.greaterEqualHandler);
 		whereHandlerMap.put(WhereType.LESS, WhereHandlers.lessHandler);
 		whereHandlerMap.put(WhereType.LESS_EQUAL, WhereHandlers.lessEqualHandler);
+		whereHandlerMap.put(WhereType.IN, WhereHandlers.inHandler);
 
 		updateSetHandlerMap.put(UpdateSetType.ASSIGN, UpdateSetHandlers.assignHandler);
 		updateSetHandlerMap.put(UpdateSetType.ADD, UpdateSetHandlers.addHandler);
@@ -60,13 +61,13 @@ public class UpdateSqlGenerator extends NonQuerySqlGenerator {
 			this.table = table;
 			return this;
 		}
-		
+
 		public Builder update(String columnName, UpdateSetType updateSetType) {
 			UpdateSetClause updateSetClause = UpdateSetClause.of(columnName, updateSetType);
 			updateSetClauses.add(updateSetClause);
 			return this;
 		}
-		
+
 		public Builder update(String columnName, UpdateSetType updateSetType, Object value) {
 			UpdateSetClause updateSetClause = UpdateSetClause.of(columnName, updateSetType, value);
 			updateSetClauses.add(updateSetClause);
@@ -75,6 +76,12 @@ public class UpdateSqlGenerator extends NonQuerySqlGenerator {
 
 		public Builder where(String columnName, WhereType whereType, Object value) {
 			WhereClause updateWhereClause = WhereClause.of(columnName, whereType, value);
+			whereClauses.add(updateWhereClause);
+			return this;
+		}
+
+		public Builder where(String columnName, WhereType whereType, List<Object> valueList) {
+			WhereClause updateWhereClause = WhereClause.of(columnName, whereType, valueList);
 			whereClauses.add(updateWhereClause);
 			return this;
 		}

@@ -143,6 +143,27 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 		} else
 			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
 	}
+	
+	@Override
+	public KumaSqlDao where(String columnName, WhereType whereType, List<Object> valueList) {
+		if (operationType.get() == OperationType.SELECT) {
+			top.starrysea.kql.QuerySqlGenerator.Builder queryBuilder = (top.starrysea.kql.QuerySqlGenerator.Builder) builder
+					.get();
+			queryBuilder.where(columnName, whereType, valueList);
+			return this;
+		} else if (operationType.get() == OperationType.UPDATE) {
+			top.starrysea.kql.UpdateSqlGenerator.Builder updateBuilder = (top.starrysea.kql.UpdateSqlGenerator.Builder) builder
+					.get();
+			updateBuilder.where(columnName, whereType, valueList);
+			return this;
+		} else if (operationType.get() == OperationType.DELETE) {
+			top.starrysea.kql.DeleteSqlGenerator.Builder deleteBuilder = (top.starrysea.kql.DeleteSqlGenerator.Builder) builder
+					.get();
+			deleteBuilder.where(columnName, whereType, valueList);
+			return this;
+		} else
+			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
+	}
 
 	public KumaSqlDao where(String columnName, String alias, WhereType whereType, Object value) {
 		if (operationType.get() == OperationType.SELECT) {
@@ -433,5 +454,10 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 			builder.set(new UpdateSqlGenerator.Builder());
 			break;
 		}
+	}
+
+	@Override
+	public JdbcTemplate getTemplate() {
+		return template;
 	}
 }
