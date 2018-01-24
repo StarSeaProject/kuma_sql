@@ -143,7 +143,7 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 		} else
 			throw new IllegalStateException(NOT_SELECT_MODE_INFO);
 	}
-	
+
 	@Override
 	public KumaSqlDao where(String columnName, WhereType whereType, List<Object> valueList) {
 		if (operationType.get() == OperationType.SELECT) {
@@ -356,8 +356,10 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 		if (operationType.get() != OperationType.SELECT)
 			throw new UnsupportedOperationException("endForList方法仅支持SELECT模式,增删改请使用无参数版本的end方法");
 		SqlWithParams sqlWithParams = builder.get().build().generate();
-		logger.info("生成的sql为:{}", sqlWithParams.getSql());
-		logger.info("sql的参数为{}", Arrays.toString(sqlWithParams.getParams()));
+		if (logger.isInfoEnabled()) {
+			logger.info("生成的sql为:{}", sqlWithParams.getSql());
+			logger.info("sql的参数为{}", Arrays.toString(sqlWithParams.getParams()));
+		}
 		List<T> result = template.query(sqlWithParams.getSql(), sqlWithParams.getParams(), rowMapper);
 		resetBuilder();
 		return new ListSqlResult(result);
@@ -368,8 +370,10 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 		if (operationType.get() != OperationType.SELECT)
 			throw new UnsupportedOperationException("endForList方法仅支持SELECT模式,增删改请使用无参数版本的end方法");
 		SqlWithParams sqlWithParams = builder.get().build().generate();
-		logger.info("生成的sql为:{}", sqlWithParams.getSql());
-		logger.info("sql的参数为{}", Arrays.toString(sqlWithParams.getParams()));
+		if (logger.isInfoEnabled()) {
+			logger.info("生成的sql为:{}", sqlWithParams.getSql());
+			logger.info("sql的参数为{}", Arrays.toString(sqlWithParams.getParams()));
+		}
 		List<?> result = template.queryForList(sqlWithParams.getSql(), sqlWithParams.getParams(), clazz);
 		resetBuilder();
 		return new ListSqlResult(result);
@@ -383,8 +387,10 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 		if (querySqlGenerator.getSelectClauses().size() != 1)
 			throw new IllegalArgumentException("只能SELECT一列的数字!如SELECT COUNT(*) FROM...");
 		SqlWithParams sqlWithParams = querySqlGenerator.generate();
-		logger.info("生成的sql为:{}", sqlWithParams.getSql());
-		logger.info("sql的参数为{}", Arrays.toString(sqlWithParams.getParams()));
+		if (logger.isInfoEnabled()) {
+			logger.info("生成的sql为:{}", sqlWithParams.getSql());
+			logger.info("sql的参数为{}", Arrays.toString(sqlWithParams.getParams()));
+		}
 		Integer result = template.queryForObject(sqlWithParams.getSql(), sqlWithParams.getParams(), Integer.class);
 		resetBuilder();
 		return new IntegerSqlResult(result);
@@ -395,8 +401,10 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 		if (operationType.get() != OperationType.SELECT)
 			throw new UnsupportedOperationException("endForObject方法仅支持SELECT模式,增删改请使用无参数版本的end方法");
 		SqlWithParams sqlWithParams = builder.get().build().generate();
-		logger.info("生成的sql为:{}", sqlWithParams.getSql());
-		logger.info("sql的参数为{}", Arrays.toString(sqlWithParams.getParams()));
+		if (logger.isInfoEnabled()) {
+			logger.info("生成的sql为:{}", sqlWithParams.getSql());
+			logger.info("sql的参数为{}", Arrays.toString(sqlWithParams.getParams()));
+		}
 		T result = template.queryForObject(sqlWithParams.getSql(), sqlWithParams.getParams(), rowMapper);
 		resetBuilder();
 		return new EntitySqlResult<>(result);
@@ -407,8 +415,10 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 		if (operationType.get() == OperationType.SELECT)
 			throw new UnsupportedOperationException("该end方法不支持SELECT模式");
 		SqlWithParams sqlWithParams = builder.get().build().generate();
-		logger.info("生成的sql为:{}", sqlWithParams.getSql());
-		logger.info("sql的参数为{}", Arrays.toString(sqlWithParams.getParams()));
+		if (logger.isInfoEnabled()) {
+			logger.info("生成的sql为:{}", sqlWithParams.getSql());
+			logger.info("sql的参数为{}", Arrays.toString(sqlWithParams.getParams()));
+		}
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		template.update(new PreparedStatementCreator() {
 
@@ -432,8 +442,10 @@ public class KumaSqlDaoImpl implements KumaSqlDao {
 		if (operationType.get() == OperationType.SELECT)
 			throw new UnsupportedOperationException("该end方法不支持SELECT模式");
 		SqlWithParams sqlWithParams = builder.get().build().generate();
-		logger.info("生成的sql为:{}", sqlWithParams.getSql());
-		logger.info("sql的参数为{}", Arrays.toString(sqlWithParams.getParams()));
+		if (logger.isInfoEnabled()) {
+			logger.info("生成的sql为:{}", sqlWithParams.getSql());
+			logger.info("sql的参数为{}", Arrays.toString(sqlWithParams.getParams()));
+		}
 		template.batchUpdate(sqlWithParams.getSql(), bpss);
 		resetBuilder();
 		return new SqlResult(true);
