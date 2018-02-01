@@ -27,7 +27,7 @@ public class WhereGenerator extends Generator {
 
 		List<String> whereClauseString = new ArrayList<>();
 		for (WhereClause where : whereClauses) {
-			if (isNotNull(where.getValue())) {
+			if (isNotNull(where.getValue()) || isNotNull(where.getValueList())) {
 				IWhereHandler handler = QuerySqlGenerator.getHandlerMap().get(where.getWhereType());
 				HandleResult result = handler.handleWhereBuffer(where, params);
 				whereClauseString.add(result.getBuffer());
