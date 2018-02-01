@@ -35,6 +35,9 @@ public class Common {
 				result = false;
 			else
 				result = true;
+		} else if (object instanceof List) {
+			List<?> l = (List<?>) object;
+			result = !l.isEmpty();
 		}
 		return result;
 	}
