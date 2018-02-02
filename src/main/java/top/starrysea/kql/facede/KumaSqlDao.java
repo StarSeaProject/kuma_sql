@@ -75,9 +75,9 @@ public interface KumaSqlDao {
 
 	KumaSqlDao update(String columnName, UpdateSetType updateSetType, Object value);
 
-	<T> ListSqlResult endForList(RowMapper<T> rowMapper);
+	<T> ListSqlResult<T> endForList(RowMapper<T> rowMapper);
 
-	ListSqlResult endForList(Class<?> clazz);
+	<T> ListSqlResult<T> endForList(Class<T> clazz);
 
 	IntegerSqlResult endForNumber();
 

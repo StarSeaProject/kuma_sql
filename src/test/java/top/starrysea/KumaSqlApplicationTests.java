@@ -29,7 +29,7 @@ public class KumaSqlApplicationTests {
 	@Test
 	public void selectTest() {
 		Work work = new Work.Builder().workName("a").build();
-		ListSqlResult result = (ListSqlResult) kumaSqlDao.select("work_id").select("work_name").from(Work.class)
+		ListSqlResult<Work> result = kumaSqlDao.select("work_id").select("work_name").from(Work.class)
 				.where("work_name", WhereType.FUZZY, work.getWorkName()).where("work_id", WhereType.EQUALS, 1)
 				.orderBy("work_uploadtime").limit(0, 10)
 				.endForList((rs, row) -> new Work.Builder().workId(rs.getInt("work_id")).workName("work_name").build());

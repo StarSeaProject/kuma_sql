@@ -2,16 +2,16 @@ package top.starrysea.kql.facede;
 
 import java.util.List;
 
-public class ListSqlResult extends SqlResult {
+public class ListSqlResult<T> extends SqlResult {
 
-	private List<?> result;
+	private List<T> result;
 
-	public <T> ListSqlResult(List<?> result) {
+	public ListSqlResult(List<T> result) {
 		super(true);
 		this.result = result;
 	}
 
-	public List<?> getResult() {
+	public List<T> getResult() {
 		return result;
 	}
 
