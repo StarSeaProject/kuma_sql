@@ -1,12 +1,23 @@
 package top.starrysea.kql.common;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import top.starrysea.kql.entity.Entity;
 
 public class Common {
 
+	private static final Logger logger = LoggerFactory.getLogger(Common.class);
+	private static final ObjectMapper mapper = new ObjectMapper();
+	
 	// 私有构造器防止外部创建新的Util对象
 	private Common() {
 	}
@@ -61,5 +72,15 @@ public class Common {
 			tableName.append(pojoName.substring(1));
 		}
 		return tableName.toString();
+	}
+	
+	public static <T> List<T> jsonToList(String json, Class<T> clazz) {
+		JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, clazz);
+		try {
+			return mapper.readValue(json, javaType);
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+		}
+		return Collections.emptyList();
 	}
 }
