@@ -10,7 +10,8 @@ import org.springframework.stereotype.Component;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import top.starrysea.kql.common.Common;
+
+import static top.starrysea.kql.common.Common.jsonToList;
 
 @Component
 public class KumaRedisDaoImpl implements KumaRedisDao {
@@ -23,7 +24,7 @@ public class KumaRedisDaoImpl implements KumaRedisDao {
 	public <T> List<T> getList(String key, Class<T> clazz) {
 		try (Jedis jedis = jedisPool.getResource();) {
 			if (jedis.exists(key)) {
-				return Common.jsonToList(jedis.get(key), clazz);
+				return jsonToList(jedis.get(key), clazz);
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
